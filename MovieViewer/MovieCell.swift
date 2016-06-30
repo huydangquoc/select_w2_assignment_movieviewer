@@ -12,6 +12,7 @@ class MovieCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
+    @IBOutlet weak var posterView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,4 +25,12 @@ class MovieCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    func setData(movie: Movie) {
+        
+        titleLabel.text = movie.title
+        overviewLabel.text = movie.overview
+        if movie.posterUrl != nil {
+            posterView.setImageWithURL(movie.posterUrl!)
+        }
+    }
 }

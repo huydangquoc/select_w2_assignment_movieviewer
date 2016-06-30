@@ -7,40 +7,24 @@
 //
 
 import UIKit
+import AFNetworking
 
 class MoviesViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    var movies: [NSDictionary]?
+    var movies: [Movie]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.dataSource = self
         tableView.delegate = self
-//        tableView.rowHeight = UITableViewAutomaticDimension
-//        tableView.estimatedRowHeight = 100
         
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string: "http://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
-        let request = NSURLRequest(URL: url)
-        let session = NSURLSession(
-            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-            delegate: nil,
-            delegateQueue: NSOperationQueue.mainQueue())
-        
-        let task: NSURLSessionDataTask = session.dataTaskWithRequest(request) { (data, response, error) in
-            if let data = data {
-                if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
-                    NSLog("response: \(responseDictionary)")
-                    
-                    self.movies = responseDictionary["results"] as? [NSDictionary]
-                    self.tableView.reloadData()
-                }
-            }
-        }
-        task.resume()
+        Movie.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie], error: NSError?) -> Void in
+            self.movies = movies
+            self.tableView.reloadData()
+        })        
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,11 +56,7 @@ extension MoviesViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         let movie = movies![indexPath.row]
-        
-        let title = movie["title"] as! String
-        let overview = movie["overview"] as! String
-        cell.titleLabel.text = title
-        cell.overviewLabel.text = overview
+        cell.setData(movie)
         
         return cell
     }
