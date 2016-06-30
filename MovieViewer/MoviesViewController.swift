@@ -19,6 +19,8 @@ class MoviesViewController: UIViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+//        tableView.rowHeight = UITableViewAutomaticDimension
+//        tableView.estimatedRowHeight = 100
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string: "http://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
@@ -68,11 +70,13 @@ extension MoviesViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         let movie = movies![indexPath.row]
-        let title = movie["title"] as! String
         
-        cell.textLabel?.text = title
+        let title = movie["title"] as! String
+        let overview = movie["overview"] as! String
+        cell.titleLabel.text = title
+        cell.overviewLabel.text = overview
         
         return cell
     }
