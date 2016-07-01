@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class MoviesViewController: UIViewController {
 
@@ -21,9 +22,14 @@ class MoviesViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // make network request
         Movie.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie], error: NSError?) -> Void in
             self.movies = movies
             self.tableView.reloadData()
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
         })        
     }
 
