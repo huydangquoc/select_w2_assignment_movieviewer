@@ -10,6 +10,11 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
+enum MoviesViewMode {
+    
+    case NowPlaying, TopRated
+}
+
 class MoviesViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -18,6 +23,15 @@ class MoviesViewController: UIViewController {
     
     var movies: [Movie]?
     var refreshControl: UIRefreshControl!
+    var viewMode: MoviesViewMode = .NowPlaying
+    var endPointUrl: String {
+        switch viewMode {
+        case .TopRated:
+            return TMDBClient.MovieTopRated
+        default:
+            return TMDBClient.MovieNowPlaying
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +60,11 @@ class MoviesViewController: UIViewController {
         movieDetailView.movie = movie
     }
     
+    override func viewWillAppear(animated: Bool) {
+        
+        self.tabBarController?.tabBar.hidden = false
+    }
+    
     func hideError() {
         errorView.hidden = true
     }
@@ -71,7 +90,7 @@ class MoviesViewController: UIViewController {
         // Display HUD right before the request is made
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         // make network request
-        TMDBClient.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie]?, error: NSError?) -> Void in
+        TMDBClient.fetchMovies(endPointUrl, page: nil, language: nil, complete: {(movies: [Movie]?, error: NSError?) -> Void in
             
             // Hide HUD once the network request comes back (must be done on main UI thread)
             MBProgressHUD.hideHUDForView(self.view, animated: true)
@@ -93,11 +112,13 @@ class MoviesViewController: UIViewController {
 
 extension MoviesViewController: UITableViewDataSource {
     
+    // Tells the data source to return the number of rows in a given section of a table view.
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
         return movies?.count ?? 0
     }
     
+    // Asks the data source for a cell to insert in a particular location of the table view.
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
@@ -111,4 +132,9 @@ extension MoviesViewController: UITableViewDataSource {
 
 extension MoviesViewController: UITableViewDelegate {
     
+    // Tells the delegate that the specified row is now selected.
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
 }

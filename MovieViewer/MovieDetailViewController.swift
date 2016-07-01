@@ -35,6 +35,7 @@ class MovieDetailViewController: UIViewController {
         durationLabel.text = movie!.releaseDate
         
         setScrollViewContentSize()
+        self.tabBarController?.tabBar.hidden = true
     }
     
     func setScrollViewContentSize() {
