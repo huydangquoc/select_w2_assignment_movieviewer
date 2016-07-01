@@ -13,6 +13,8 @@ import MBProgressHUD
 class MoviesViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var errorView: UIView!
+    @IBOutlet weak var errorLabel: UILabel!
     
     var movies: [Movie]?
     
@@ -22,17 +24,27 @@ class MoviesViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
+        hideError()
         // Display HUD right before the request is made
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         // make network request
-        Movie.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie], error: NSError?) -> Void in
-            self.movies = movies
-            self.tableView.reloadData()
+        TMDBClient.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie]?, error: NSError?) -> Void in
+            
             // Hide HUD once the network request comes back (must be done on main UI thread)
             MBProgressHUD.hideHUDForView(self.view, animated: true)
-        })        
+            
+            guard error == nil else {
+                self.movies?.removeAll()
+                self.tableView.reloadData()
+                self.showError(error!)
+                return
+            }
+            
+            self.movies = movies
+            self.tableView.reloadData()
+        })
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -50,6 +62,14 @@ class MoviesViewController: UIViewController {
         movieDetailView.movie = movie
     }
     
+    func hideError() {
+        errorView.hidden = true
+    }
+    
+    func showError(error: NSError) {
+        errorLabel.text = error.localizedDescription
+        errorView.hidden = false
+    }
 }
 
 extension MoviesViewController: UITableViewDataSource {

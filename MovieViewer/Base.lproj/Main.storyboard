@@ -20,6 +20,24 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="150" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gRH-uL-sLG">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" alpha="0.5" contentMode="scaleToFill" id="D4f-7u-WKf">
+                                    <rect key="frame" x="0.0" y="242" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is an error and it is a very very long error sf sfsd f ff f  sdfds ff sd fsdf sdf sdfsd fsd" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qbQ-Dr-MEA">
+                                            <rect key="frame" x="8" y="8" width="304" height="32"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="qbQ-Dr-MEA" firstAttribute="top" secondItem="D4f-7u-WKf" secondAttribute="top" constant="8" id="0Gl-Zn-kAz"/>
+                                        <constraint firstItem="qbQ-Dr-MEA" firstAttribute="leading" secondItem="D4f-7u-WKf" secondAttribute="leading" constant="8" id="CPn-Yl-uBH"/>
+                                        <constraint firstAttribute="trailing" secondItem="qbQ-Dr-MEA" secondAttribute="trailing" constant="8" id="cw8-YT-gke"/>
+                                    </constraints>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="150" id="IU5-Wt-QQF" customClass="MovieCell" customModule="MovieViewer" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="320" height="150"/>
@@ -31,7 +49,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhL-4j-qP7">
                                                     <rect key="frame" x="121" y="8" width="191" height="21"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MCw-vM-YPI">
@@ -47,7 +65,7 @@
                                                         <constraint firstAttribute="height" constant="104" id="eIR-ui-1m5"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -83,6 +101,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="46R-eg-eW2"/>
                     <connections>
+                        <outlet property="errorLabel" destination="qbQ-Dr-MEA" id="hKp-EZ-U9N"/>
+                        <outlet property="errorView" destination="D4f-7u-WKf" id="luU-4X-buG"/>
                         <outlet property="tableView" destination="gRH-uL-sLG" id="kzj-5w-djx"/>
                     </connections>
                 </viewController>
@@ -108,11 +128,11 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3AH-OL-8Fw">
                                 <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5E0-4w-TXk">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5E0-4w-TXk">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="550"/>
                                         <subviews>
-                                            <view alpha="0.69999999999999996" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3DA-1a-UcC">
-                                                <rect key="frame" x="20" y="368" width="280" height="200"/>
+                                            <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3DA-1a-UcC">
+                                                <rect key="frame" x="20" y="350" width="280" height="200"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Very long movie title will be here he he he he he he" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ltq-hA-AeI">
                                                         <rect key="frame" x="8" y="8" width="264" height="41"/>
@@ -194,7 +214,7 @@
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="600" id="LEf-rh-NbP"/>
+                                            <constraint firstAttribute="height" constant="550" id="LEf-rh-NbP"/>
                                             <constraint firstItem="3DA-1a-UcC" firstAttribute="trailing" secondItem="5E0-4w-TXk" secondAttribute="trailing" constant="-20" id="MnD-8u-Nre"/>
                                             <constraint firstItem="3DA-1a-UcC" firstAttribute="leading" secondItem="5E0-4w-TXk" secondAttribute="leading" constant="20" id="clI-Kg-Q5f"/>
                                             <constraint firstItem="3DA-1a-UcC" firstAttribute="bottom" secondItem="5E0-4w-TXk" secondAttribute="bottom" id="deS-C2-clB"/>
