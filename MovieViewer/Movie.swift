@@ -12,6 +12,7 @@ struct Movie {
     var title: String?
     var overview: String?
     var posterUrl: NSURL?
+    var releaseDate: String?
     
     init(dictionary: NSDictionary) {
         
@@ -20,6 +21,7 @@ struct Movie {
         if let posterPath = dictionary["poster_path"] as? String {
             posterUrl = NSURL(string: TMDBConfig.BaseUrl + posterPath)
         }
+        releaseDate = dictionary["release_date"] as? String ?? ""
     }
     
     static func fetchNowPlaying(page page: Int?, language: String?, complete: ((movies: [Movie], error: NSError?) -> Void) ) {
