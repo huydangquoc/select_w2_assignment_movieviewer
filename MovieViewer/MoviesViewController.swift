@@ -17,6 +17,7 @@ class MoviesViewController: UIViewController {
     @IBOutlet weak var errorLabel: UILabel!
     
     var movies: [Movie]?
+    var refreshControl: UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,25 +25,8 @@ class MoviesViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        hideError()
-        // Display HUD right before the request is made
-        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-        // make network request
-        TMDBClient.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie]?, error: NSError?) -> Void in
-            
-            // Hide HUD once the network request comes back (must be done on main UI thread)
-            MBProgressHUD.hideHUDForView(self.view, animated: true)
-            
-            guard error == nil else {
-                self.movies?.removeAll()
-                self.tableView.reloadData()
-                self.showError(error!)
-                return
-            }
-            
-            self.movies = movies
-            self.tableView.reloadData()
-        })
+        loadMovies()
+        setupRefreshControl()
     }
     
     override func didReceiveMemoryWarning() {
@@ -69,6 +53,41 @@ class MoviesViewController: UIViewController {
     func showError(error: NSError) {
         errorLabel.text = error.localizedDescription
         errorView.hidden = false
+    }
+    
+    func setupRefreshControl() {
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(onRefresh), forControlEvents: .ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+    }
+    
+    func onRefresh() {
+        loadMovies()
+    }
+    
+    func loadMovies() {
+        
+        hideError()
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // make network request
+        TMDBClient.fetchNowPlaying(page: nil, language: nil, complete: {(movies: [Movie]?, error: NSError?) -> Void in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            // end refreshing
+            self.refreshControl.endRefreshing()
+            
+            guard error == nil else {
+                self.movies?.removeAll()
+                self.tableView.reloadData()
+                self.showError(error!)
+                return
+            }
+            
+            self.movies = movies
+            self.tableView.reloadData()
+        })
     }
 }
 
