@@ -29,12 +29,22 @@ class MoviesViewController: UIViewController {
     @IBOutlet weak var errorView: UIView!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var displayModeSegmented: UISegmentedControl!
+    @IBOutlet weak var searchBarButton: UIBarButtonItem!
     
-    var movies: [Movie]?
     var refreshControl: UIRefreshControl!
     var refreshControlGrid: UIRefreshControl!
+    var searchBar = UISearchBar()
+    var defaultNavigationTitleView: UIView?
+    var movies: [Movie]? {
+        didSet {
+            
+            filteredMovies = movies
+        }
+    }
+    var filteredMovies: [Movie]?
     var viewMode: MoviesViewMode = .NowPlaying
     var endPointUrl: String {
+        
         switch viewMode {
         case .TopRated:
             return TMDBClient.MovieTopRated
@@ -42,6 +52,7 @@ class MoviesViewController: UIViewController {
             return TMDBClient.MovieNowPlaying
         }
     }
+    
     var displayMode = DisplayMode.Grid
     
     override func viewDidLoad() {
@@ -52,12 +63,13 @@ class MoviesViewController: UIViewController {
         tableView.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
+        searchBar.delegate = self
         
-        // set display mode
-        setDisplayMode(displayMode)
-        
-        // setup UI controls
+        // setup controls, UI
         setupRefreshControls()
+        setTitle()
+        setDisplayMode(displayMode)
+        defaultNavigationTitleView = navigationItem.titleView
         
         // load data to view
         loadMovies()
@@ -94,6 +106,32 @@ class MoviesViewController: UIViewController {
             setDisplayMode(.List)
         default:
             setDisplayMode(.Grid)
+        }
+    }
+    
+    @IBAction func onTapSearchButton(sender: AnyObject) {
+        
+        if(searchBarButton.title == "Search") {
+            searchBarButton.title = "Cancel"
+            navigationItem.titleView = searchBar
+            searchBar.becomeFirstResponder()
+        } else {
+            searchBarButton.title = "Search"
+            searchBar.text = ""
+            navigationItem.titleView = defaultNavigationTitleView
+            filteredMovies = movies
+            self.searchBar(searchBar, textDidChange: "")
+            searchBar.resignFirstResponder()
+        }
+    }
+    
+    func setTitle() {
+        
+        switch viewMode {
+        case .TopRated:
+            title = "Top Rated"
+        default:
+            title = "Now Playing"
         }
     }
     
@@ -182,14 +220,14 @@ extension MoviesViewController: UITableViewDataSource {
     // Tells the data source to return the number of rows in a given section of a table view.
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
-        return movies?.count ?? 0
+        return filteredMovies?.count ?? 0
     }
     
     // Asks the data source for a cell to insert in a particular location of the table view.
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         
         return cell
@@ -211,14 +249,14 @@ extension MoviesViewController: UICollectionViewDataSource {
     // Asks your data source object for the number of items in the specified section.
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return movies?.count ?? 0
+        return filteredMovies?.count ?? 0
     }
     
     // Asks your data source object for the cell that corresponds to the specified item in the collection view.
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let gridCell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionCell
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
         gridCell.setData(movie)
         
         return gridCell
@@ -240,5 +278,20 @@ extension MoviesViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                                insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         return sectionInsets
+    }
+}
+
+extension MoviesViewController: UISearchBarDelegate {
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        filteredMovies = searchText.isEmpty ? movies : movies!.filter({ (movie :Movie) -> Bool in
+            return movie.title!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+        })
+        reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }

@@ -215,12 +215,18 @@
                                 <action selector="onChangeDisplayMode:" destination="BYZ-38-t0r" eventType="valueChanged" id="TJ1-aC-AY2"/>
                             </connections>
                         </segmentedControl>
+                        <barButtonItem key="rightBarButtonItem" title="Search" id="nV6-an-Gb9">
+                            <connections>
+                                <action selector="onTapSearchButton:" destination="BYZ-38-t0r" id="RDA-W6-6PQ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="DlX-42-xy5" id="9zC-k9-d6t"/>
                         <outlet property="displayModeSegmented" destination="FF5-eS-SOl" id="AWv-YJ-2iA"/>
                         <outlet property="errorLabel" destination="qbQ-Dr-MEA" id="hKp-EZ-U9N"/>
                         <outlet property="errorView" destination="D4f-7u-WKf" id="luU-4X-buG"/>
+                        <outlet property="searchBarButton" destination="nV6-an-Gb9" id="dFE-Pi-jp4"/>
                         <outlet property="tableView" destination="gRH-uL-sLG" id="kzj-5w-djx"/>
                     </connections>
                 </viewController>
