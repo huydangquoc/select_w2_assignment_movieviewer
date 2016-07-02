@@ -15,7 +15,20 @@ class MovieCollectionCell: UICollectionViewCell {
     func setData(movie: Movie) {
         
         if movie.posterUrl != nil {
-            posterView.setImageWithURL(movie.posterUrl!)
+            let request = NSURLRequest(URL: movie.posterUrl!)
+            posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
+                
+                // image come frome cache
+                if response == nil {
+                    self.posterView.image = image
+                } else {
+                    self.posterView.setImageWithFadeIn(image)
+                }
+                }, failure: { (request, response, error) in
+                    
+                    // process error here
+                    debugPrint(error.localizedDescription)
+            })
         }
     }
 }

@@ -30,7 +30,20 @@ class MovieCell: UITableViewCell {
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
         if movie.posterUrl != nil {
-            posterView.setImageWithURL(movie.posterUrl!)
+            let request = NSURLRequest(URL: movie.posterUrl!)
+            posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
+                
+                // image come frome cache
+                if response == nil {
+                    self.posterView.image = image
+                } else {
+                    self.posterView.setImageWithFadeIn(image)
+                }
+            }, failure: { (request, response, error) in
+                
+                // process error here
+                debugPrint(error.localizedDescription)
+            })
         }
     }
 }
