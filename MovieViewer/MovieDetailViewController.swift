@@ -29,10 +29,11 @@ class MovieDetailViewController: UIViewController {
         
         titleLabel.text = movie!.title
         overviewLabel.text = movie!.overview
-        if movie!.posterUrl != nil {
-            posterView.setImageWithURL(movie!.posterUrl!)
-        }
         releaseDateLabel.text = movie!.releaseDate
+        
+        let thumbnail = TMDBClient.BaseImageW154Url + movie!.posterPath!
+        let poster = TMDBClient.BaseImageWOriginalUrl + movie!.posterPath!
+        posterView.setImageWithThumbnail(thumbnail, imageLink: poster)
         
         setScrollViewContentSize()
     }
@@ -59,16 +60,4 @@ class MovieDetailViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

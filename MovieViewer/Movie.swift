@@ -11,16 +11,14 @@ import Foundation
 struct Movie {
     var title: String?
     var overview: String?
-    var posterUrl: NSURL?
+    var posterPath: String?
     var releaseDate: String?
     
     init(dictionary: NSDictionary) {
         
         title = dictionary["title"] as? String ?? ""
         overview = dictionary["overview"] as? String ?? ""
-        if let posterPath = dictionary["poster_path"] as? String {
-            posterUrl = NSURL(string: TMDBClient.BaseUrl + posterPath)
-        }
+        posterPath = dictionary["poster_path"] as? String ?? ""
         releaseDate = dictionary["release_date"] as? String ?? ""
     }
 }

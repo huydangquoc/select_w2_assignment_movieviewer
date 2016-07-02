@@ -10,7 +10,8 @@ import Foundation
 
 struct TMDBClient {
     static let ApiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-    static let BaseUrl = "http://image.tmdb.org/t/p/w500"
+    static let BaseImageW154Url = "http://image.tmdb.org/t/p/w154"
+    static let BaseImageWOriginalUrl = "http://image.tmdb.org/t/p/original"
     static let MovieNowPlaying = "http://api.themoviedb.org/3/movie/now_playing?api_key=\(ApiKey)"
     static let MovieTopRated = "http://api.themoviedb.org/3/movie/top_rated?api_key=\(ApiKey)"
     
