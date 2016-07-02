@@ -26,7 +26,8 @@ class ContainerViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        let moviesViewController = segue.destinationViewController as! MoviesViewController
+        let navigation = segue.destinationViewController as! UINavigationController
+        let moviesViewController = navigation.topViewController as! MoviesViewController
         
         switch restorationIdentifier! {
         case "topRated":

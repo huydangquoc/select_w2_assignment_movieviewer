@@ -32,10 +32,9 @@ class MovieDetailViewController: UIViewController {
         if movie!.posterUrl != nil {
             posterView.setImageWithURL(movie!.posterUrl!)
         }
-        durationLabel.text = movie!.releaseDate
+        releaseDateLabel.text = movie!.releaseDate
         
         setScrollViewContentSize()
-        self.tabBarController?.tabBar.hidden = true
     }
     
     func setScrollViewContentSize() {
