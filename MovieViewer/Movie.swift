@@ -9,6 +9,7 @@
 import Foundation
 
 struct Movie {
+    
     var title: String?
     var overview: String?
     var posterPath: String?

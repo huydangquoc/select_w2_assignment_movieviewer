@@ -23,6 +23,7 @@ class MovieCollectionCell: UICollectionViewCell {
             // image come frome cache
             if response == nil {
                 self.posterView.image = image
+            // image come from network
             } else {
                 self.posterView.setImageWithFadeIn(image)
             }

@@ -191,10 +191,10 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3AH-OL-8Fw">
                                 <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5E0-4w-TXk">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5E0-4w-TXk" userLabel="Content View">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="550"/>
                                         <subviews>
-                                            <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3DA-1a-UcC">
+                                            <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3DA-1a-UcC" userLabel="Detail View">
                                                 <rect key="frame" x="20" y="350" width="280" height="200"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Very long movie title will be here he he he he he he" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ltq-hA-AeI">
@@ -307,17 +307,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="YZh-gf-t9r"/>
                     <connections>
-                        <outlet property="contentView" destination="5E0-4w-TXk" id="e2P-GZ-Rbo"/>
                         <outlet property="contentViewHeightConstrain" destination="LEf-rh-NbP" id="IND-5b-tPL"/>
-                        <outlet property="detailScrollView" destination="3AH-OL-8Fw" id="uBl-ES-PkP"/>
-                        <outlet property="detailView" destination="3DA-1a-UcC" id="26X-Fg-myk"/>
                         <outlet property="detailViewHeightConstrain" destination="f2z-qq-NAU" id="gRa-dA-WSj"/>
-                        <outlet property="durationLabel" destination="nm6-1F-eHJ" id="Gv9-iH-9uM"/>
                         <outlet property="overviewLabel" destination="FRZ-Iz-a5V" id="4E7-TF-ttt"/>
                         <outlet property="posterView" destination="USR-29-kBy" id="RsH-sT-AJh"/>
                         <outlet property="releaseDateLabel" destination="LAa-d1-ICg" id="d5X-UW-zXJ"/>
                         <outlet property="titleLabel" destination="Ltq-hA-AeI" id="gun-gO-dSY"/>
-                        <outlet property="voteLabel" destination="M74-DA-ipU" id="slF-m6-qu9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IpN-3F-wBW" userLabel="First Responder" sceneMemberID="firstResponder"/>

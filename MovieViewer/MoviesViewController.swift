@@ -52,9 +52,9 @@ class MoviesViewController: UIViewController {
             return TMDBClient.MovieNowPlaying
         }
     }
-    
     var displayMode = DisplayMode.Grid
     
+    // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -67,7 +67,6 @@ class MoviesViewController: UIViewController {
         
         // setup controls, UI
         setupRefreshControls()
-        setTitle()
         setDisplayMode(displayMode)
         defaultNavigationTitleView = navigationItem.titleView
         setTheme()
@@ -75,13 +74,6 @@ class MoviesViewController: UIViewController {
         // load data to view
         loadMovies()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -126,21 +118,13 @@ class MoviesViewController: UIViewController {
         }
     }
     
-    func setTitle() {
-        
-        switch viewMode {
-        case .TopRated:
-            title = "Top Rated"
-        default:
-            title = "Now Playing"
-        }
-    }
-    
     func hideError() {
+        
         errorView.hidden = true
     }
     
     func showError(error: NSError) {
+        
         errorLabel.text = error.localizedDescription
         errorView.hidden = false
     }
@@ -161,6 +145,7 @@ class MoviesViewController: UIViewController {
     }
     
     func onRefresh() {
+        
         loadMovies()
     }
     
@@ -206,6 +191,7 @@ class MoviesViewController: UIViewController {
     }
     
     func endRefreshing() {
+        
         self.refreshControl.endRefreshing()
         self.refreshControlGrid.endRefreshing()
     }

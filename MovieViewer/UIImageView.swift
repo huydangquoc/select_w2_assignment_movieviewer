@@ -12,6 +12,7 @@ extension UIImageView {
     
     // Set image with fade in animation
     func setImageWithFadeIn(image: UIImage) {
+        
         self.alpha = 0.0
         self.image = image
         UIView.animateWithDuration(1.5) {
@@ -23,7 +24,6 @@ extension UIImageView {
     func setImageWithThumbnail(thumbnailLink: String, imageLink: String) {
         
         let thumbnailURL = NSURL(string: thumbnailLink)!
-        
         // load thumbnail first
         let request = NSURLRequest(URL: thumbnailURL)
         self.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
@@ -32,6 +32,7 @@ extension UIImageView {
             self.image = image
             // then, load full size image
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
                 let url = NSURL(string: imageLink)!
                 self.setImageWithURL(url)
             })

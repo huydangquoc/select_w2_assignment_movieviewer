@@ -10,6 +10,7 @@ import UIKit
 
 extension UIColor {
     
+    // support set color with hex value
     class func colorWithRGBHex(hex: Int, alpha: Float = 1.0) -> UIColor {
         
         let r = Float((hex >> 16) & 0xFF)

@@ -11,19 +11,15 @@ import UIKit
 class MovieDetailViewController: UIViewController {
 
     @IBOutlet weak var posterView: UIImageView!
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var detailScrollView: UIScrollView!
-    @IBOutlet weak var detailView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var releaseDateLabel: UILabel!
-    @IBOutlet weak var voteLabel: UILabel!
-    @IBOutlet weak var durationLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
     @IBOutlet weak var detailViewHeightConstrain: NSLayoutConstraint!
     @IBOutlet weak var contentViewHeightConstrain: NSLayoutConstraint!
     
     var movie: Movie?
     
+    // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,11 +49,7 @@ class MovieDetailViewController: UIViewController {
     }
     
     override func viewWillLayoutSubviews() {
+        
         setScrollViewContentSize()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }

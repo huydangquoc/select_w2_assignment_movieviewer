@@ -9,22 +9,16 @@
 import UIKit
 
 class MovieCell: UITableViewCell {
-
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
     @IBOutlet weak var posterView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
         posterView.layer.cornerRadius = 5
         posterView.clipsToBounds = true
-    }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 
     func setData(movie: Movie) {
@@ -41,6 +35,7 @@ class MovieCell: UITableViewCell {
             // image come frome cache
             if response == nil {
                 self.posterView.image = image
+            // image come frome network
             } else {
                 self.posterView.setImageWithFadeIn(image)
             }
