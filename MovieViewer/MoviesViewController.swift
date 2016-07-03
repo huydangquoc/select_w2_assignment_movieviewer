@@ -146,13 +146,18 @@ class MoviesViewController: UIViewController {
     }
     
     func setupRefreshControls() {
+        
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(onRefresh), forControlEvents: .ValueChanged)
         tableView.insertSubview(refreshControl, atIndex: 0)
+        // remove showing empty row for table incase network error
+        tableView.tableFooterView = UIView()
         
         refreshControlGrid = UIRefreshControl()
         refreshControlGrid.addTarget(self, action: #selector(onRefresh), forControlEvents: .ValueChanged)
         collectionView.insertSubview(refreshControlGrid, atIndex: 0)
+        // this help show refresh control in case empty collection view
+        self.collectionView!.alwaysBounceVertical = true
     }
     
     func onRefresh() {
@@ -230,6 +235,10 @@ class MoviesViewController: UIViewController {
         
         refreshControlGrid.backgroundColor = UIColor.blackColor()
         refreshControlGrid.tintColor = themeColor
+        
+        errorView.backgroundColor = UIColor.whiteColor()
+        errorView.alpha = 0.8
+        errorLabel.textColor = UIColor.redColor()
     }
 }
 

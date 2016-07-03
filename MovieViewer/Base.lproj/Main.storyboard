@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Movies View Controller-->
@@ -20,24 +21,6 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="150" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gRH-uL-sLG">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <view key="tableFooterView" alpha="0.80000000000000004" contentMode="scaleToFill" id="D4f-7u-WKf">
-                                    <rect key="frame" x="0.0" y="242" width="320" height="44"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is an error and it is a very very long error sf sfsd f ff f  sdfds ff sd fsdf sdf sdfsd fsd" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qbQ-Dr-MEA">
-                                            <rect key="frame" x="8" y="8" width="304" height="32"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <constraints>
-                                        <constraint firstItem="qbQ-Dr-MEA" firstAttribute="top" secondItem="D4f-7u-WKf" secondAttribute="top" constant="8" id="0Gl-Zn-kAz"/>
-                                        <constraint firstItem="qbQ-Dr-MEA" firstAttribute="leading" secondItem="D4f-7u-WKf" secondAttribute="leading" constant="8" id="CPn-Yl-uBH"/>
-                                        <constraint firstAttribute="trailing" secondItem="qbQ-Dr-MEA" secondAttribute="trailing" constant="8" id="cw8-YT-gke"/>
-                                    </constraints>
-                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="150" id="IU5-Wt-QQF" customClass="MovieCell" customModule="MovieViewer" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="320" height="150"/>
@@ -125,13 +108,33 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D4f-7u-WKf">
+                                <rect key="frame" x="0.0" y="64" width="320" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is an error and it is a very very long error sf sfsd f ff f  sdfds ff sd fsdf sdf sdfsd fsd" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qbQ-Dr-MEA">
+                                        <rect key="frame" x="8" y="8" width="304" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="LID-dg-Jwk"/>
+                                    <constraint firstItem="qbQ-Dr-MEA" firstAttribute="bottom" secondItem="D4f-7u-WKf" secondAttribute="bottomMargin" id="Z0l-S2-BtK"/>
+                                    <constraint firstItem="qbQ-Dr-MEA" firstAttribute="top" secondItem="D4f-7u-WKf" secondAttribute="topMargin" id="dFm-hV-f2a"/>
+                                    <constraint firstItem="qbQ-Dr-MEA" firstAttribute="leading" secondItem="D4f-7u-WKf" secondAttribute="leadingMargin" id="dj8-rd-mfw"/>
+                                    <constraint firstItem="qbQ-Dr-MEA" firstAttribute="trailing" secondItem="D4f-7u-WKf" secondAttribute="trailingMargin" id="e3w-aV-Ufj"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="0EZ-km-qBR"/>
+                            <constraint firstAttribute="trailing" secondItem="D4f-7u-WKf" secondAttribute="trailing" id="F1v-ri-KQ7"/>
                             <constraint firstItem="DlX-42-xy5" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="GA6-6s-NxP"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="IdX-XE-vaC"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Lb6-JA-9AB"/>
+                            <constraint firstItem="D4f-7u-WKf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Leu-cX-KGa"/>
+                            <constraint firstItem="D4f-7u-WKf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="NHA-N9-w9m"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Poe-rZ-Ht7"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="DlX-42-xy5" secondAttribute="bottom" id="Qh4-R7-qEw"/>
                             <constraint firstItem="DlX-42-xy5" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="tWD-fm-Ac6"/>
