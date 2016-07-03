@@ -17,6 +17,8 @@ class MovieCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        posterView.layer.cornerRadius = 5
+        posterView.clipsToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

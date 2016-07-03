@@ -70,7 +70,7 @@ class MoviesViewController: UIViewController {
         setTitle()
         setDisplayMode(displayMode)
         defaultNavigationTitleView = navigationItem.titleView
-        //setTheme()
+        setTheme()
         
         // load data to view
         loadMovies()
@@ -248,7 +248,7 @@ extension MoviesViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
-        //cell.setTheme()
+        cell.setTheme()
         
         return cell
     }
@@ -278,7 +278,7 @@ extension MoviesViewController: UICollectionViewDataSource {
         let gridCell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionCell
         let movie = filteredMovies![indexPath.row]
         gridCell.setData(movie)
-        //gridCell.setTheme()
+        gridCell.setTheme()
         
         return gridCell
     }
