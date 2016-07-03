@@ -220,7 +220,6 @@ class MoviesViewController: UIViewController {
         tableView.backgroundColor = UIColor.blackColor()
         collectionView.backgroundColor = UIColor.blackColor()
         
-        searchBar.barStyle = UIBarStyle.Black
         searchBar.tintColor = themeColor
         let textFieldInsideSearchBar = searchBar.valueForKey("searchField") as? UITextField
         textFieldInsideSearchBar?.textColor = themeColor
