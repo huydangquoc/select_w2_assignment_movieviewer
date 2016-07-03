@@ -48,4 +48,17 @@ class MovieCell: UITableViewCell {
             debugPrint(error.localizedDescription)
         })
     }
+    
+    func setTheme() {
+        
+        titleLabel.textColor = UIColor.whiteColor()
+        overviewLabel.textColor = UIColor.whiteColor()
+        
+        // clear cell background to get rid of WHITE background by default
+        backgroundColor = UIColor.clearColor()
+        // config cell selected background
+        let customSelectionView = UIView(frame: frame)
+        customSelectionView.backgroundColor = themeColor
+        selectedBackgroundView = customSelectionView
+    }
 }

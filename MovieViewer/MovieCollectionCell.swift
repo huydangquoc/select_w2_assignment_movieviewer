@@ -32,4 +32,14 @@ class MovieCollectionCell: UICollectionViewCell {
                 debugPrint(error.localizedDescription)
         })
     }
+    
+    func setTheme() {
+        
+        // clear cell background to get rid of WHITE background by default
+        backgroundColor = UIColor.clearColor()
+        // config cell selected background
+        let customSelectionView = UIView(frame: frame)
+        customSelectionView.backgroundColor = themeColor
+        selectedBackgroundView = customSelectionView
+    }
 }

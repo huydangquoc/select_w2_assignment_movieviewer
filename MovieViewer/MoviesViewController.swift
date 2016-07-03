@@ -20,7 +20,7 @@ enum DisplayMode {
     case Grid, List
 }
 
-private let sectionInsets = UIEdgeInsets(top: 30.0, left: 10.0, bottom: 20.0, right: 10.0)
+private let sectionInsets = UIEdgeInsets(top: 20.0, left: 10.0, bottom: 20.0, right: 10.0)
 
 class MoviesViewController: UIViewController {
 
@@ -70,6 +70,7 @@ class MoviesViewController: UIViewController {
         setTitle()
         setDisplayMode(displayMode)
         defaultNavigationTitleView = navigationItem.titleView
+        //setTheme()
         
         // load data to view
         loadMovies()
@@ -213,6 +214,24 @@ class MoviesViewController: UIViewController {
             tableView.reloadData()
         }
     }
+    
+    func setTheme() {
+        
+        tableView.backgroundColor = UIColor.blackColor()
+        collectionView.backgroundColor = UIColor.blackColor()
+        
+        searchBar.barStyle = UIBarStyle.Black
+        searchBar.tintColor = themeColor
+        let textFieldInsideSearchBar = searchBar.valueForKey("searchField") as? UITextField
+        textFieldInsideSearchBar?.textColor = themeColor
+        searchBar.keyboardAppearance = .Dark
+        
+        refreshControl.backgroundColor = UIColor.blackColor()
+        refreshControl.tintColor = themeColor
+        
+        refreshControlGrid.backgroundColor = UIColor.blackColor()
+        refreshControlGrid.tintColor = themeColor
+    }
 }
 
 extension MoviesViewController: UITableViewDataSource {
@@ -229,6 +248,7 @@ extension MoviesViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
+        //cell.setTheme()
         
         return cell
     }
@@ -258,6 +278,7 @@ extension MoviesViewController: UICollectionViewDataSource {
         let gridCell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionCell
         let movie = filteredMovies![indexPath.row]
         gridCell.setData(movie)
+        //gridCell.setTheme()
         
         return gridCell
     }
@@ -278,6 +299,11 @@ extension MoviesViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                                insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         return sectionInsets
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+        collectionView.deselectItemAtIndexPath(indexPath, animated: true)
     }
 }
 

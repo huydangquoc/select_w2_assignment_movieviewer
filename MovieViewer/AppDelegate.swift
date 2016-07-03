@@ -8,6 +8,8 @@
 
 import UIKit
 
+let themeColor = UIColor.colorWithRGBHex(0xFFCC00)
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,7 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        //setTheme()
+        
         return true
     }
 
@@ -41,6 +45,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    func setTheme() {
+        
+        UINavigationBar.appearance().barStyle = UIBarStyle.Black
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : themeColor]
+        UINavigationBar.appearance().tintColor = themeColor
+        
+        UITabBar.appearance().tintColor = themeColor
+        UITabBar.appearance().barTintColor = UIColor.blackColor()
+        UITabBar.appearance().alpha = 0.8
+    }
 }
 

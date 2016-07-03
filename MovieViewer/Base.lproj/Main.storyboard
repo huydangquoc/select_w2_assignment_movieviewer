@@ -197,11 +197,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="0EZ-km-qBR"/>
+                            <constraint firstItem="DlX-42-xy5" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="GA6-6s-NxP"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="IdX-XE-vaC"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Lb6-JA-9AB"/>
                             <constraint firstItem="gRH-uL-sLG" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Poe-rZ-Ht7"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="DlX-42-xy5" secondAttribute="bottom" id="Qh4-R7-qEw"/>
-                            <constraint firstItem="DlX-42-xy5" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="lji-AE-egz"/>
                             <constraint firstItem="DlX-42-xy5" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="tWD-fm-Ac6"/>
                             <constraint firstAttribute="trailing" secondItem="DlX-42-xy5" secondAttribute="trailing" id="w7A-fJ-JOG"/>
                         </constraints>
@@ -433,7 +433,7 @@
         <image name="topRated" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="RAX-NO-jcF"/>
+        <segue reference="uXx-Dg-rVa"/>
         <segue reference="Cnc-NR-Id6"/>
     </inferredMetricsTieBreakers>
 </document>
