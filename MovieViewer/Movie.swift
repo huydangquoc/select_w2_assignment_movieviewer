@@ -19,7 +19,7 @@ struct Movie {
         
         title = dictionary["title"] as? String ?? ""
         overview = dictionary["overview"] as? String ?? ""
-        posterPath = dictionary["poster_path"] as? String ?? ""
+        posterPath = dictionary["poster_path"] as? String ?? nil
         releaseDate = dictionary["release_date"] as? String ?? ""
     }
 }

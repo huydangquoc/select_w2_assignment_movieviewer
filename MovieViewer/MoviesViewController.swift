@@ -85,7 +85,7 @@ class MoviesViewController: UIViewController {
             indexPath = collectionView.indexPathForCell(cell)
         }
         
-        let movie = movies![indexPath!.row]
+        let movie = filteredMovies![indexPath!.row]
         let movieDetailView = segue.destinationViewController as! MovieDetailViewController
         movieDetailView.movie = movie
     }
