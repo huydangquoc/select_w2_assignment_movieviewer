@@ -7,12 +7,65 @@
 //
 
 import UIKit
+import SteviaLayout
 
 class MovieCell: UITableViewCell {
     
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var overviewLabel: UILabel!
-    @IBOutlet weak var posterView: UIImageView!
+    var infoView = UIView()
+    
+    var titleLabel = UILabel()
+    var overviewLabel = UILabel()
+    var posterView = UIImageView()
+    
+    convenience init() {
+        self.init(frame:CGRectZero)
+//         This is only needed for live reload as injectionForXcode
+        // doesn't swizzle init methods.
+//        render()
+    }
+    
+    required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder)}
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        sv(
+            posterView.width(60).height(100),
+            infoView.sv(
+                titleLabel,
+                overviewLabel
+            )
+        )
+        
+        layout(
+            10,
+            |-posterView-20-infoView|
+            
+        )
+        
+        infoView.layout(
+            |titleLabel,
+            |overviewLabel
+        )
+        
+//        |-posterView-15-infoView-|
+        alignHorizontally(posterView,infoView)
+
+        overviewLabel.numberOfLines = 0
+//
+//        posterView.size(50).centerVertically()
+//        alignHorizontally(|-20-posterView-titleLabel-20-|)
+    }
+
+    func nameStyle(l:UILabel) {
+        l.font = .systemFontOfSize(24)
+        l.textColor = .blueColor()
+    }
+    
+    func overviewStyle(l:UILabel) {
+        l.font = .systemFontOfSize(24)
+        l.textColor = .blueColor()
+        l.numberOfLines = 0
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

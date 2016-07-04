@@ -71,6 +71,9 @@ class MoviesViewController: UIViewController {
         defaultNavigationTitleView = navigationItem.titleView
         setTheme()
         
+        tableView.registerClass(MovieCell.self, forCellReuseIdentifier: "MovieCell")
+
+        
         // load data to view
         loadMovies()
     }
@@ -222,9 +225,9 @@ class MoviesViewController: UIViewController {
         refreshControlGrid.backgroundColor = UIColor.blackColor()
         refreshControlGrid.tintColor = themeColor
         
-        errorView.backgroundColor = UIColor.whiteColor()
-        errorView.alpha = 0.8
-        errorLabel.textColor = UIColor.redColor()
+//        errorView.backgroundColor = UIColor.whiteColor()
+//        errorView.alpha = 0.8
+//        errorLabel.textColor = UIColor.redColor()
     }
 }
 
