@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AFNetworking
 
 enum PosterSize: String {
     
@@ -19,6 +20,7 @@ struct TMDBClient {
     static let BaseImageUrl = "http://image.tmdb.org/t/p/"
     static let MovieNowPlaying = "http://api.themoviedb.org/3/movie/now_playing?api_key=\(ApiKey)"
     static let MovieTopRated = "http://api.themoviedb.org/3/movie/top_rated?api_key=\(ApiKey)"
+    static let SearchMovie = "http://api.themoviedb.org/3/search/movie"
     
     // fetch movies from input url
     static func fetchMovies(urlString: String, page: Int?, language: String?, complete: ((movies: [Movie]?, error: NSError?) -> Void) ) {
@@ -54,5 +56,28 @@ struct TMDBClient {
             }
         }
         task.resume()
+    }
+    
+    // search movies as input settings
+    static func searchMovies(settings: SearchMovieSettings, complete: ((movies: [Movie]?, error: NSError?) -> Void) ) {
+        
+        let manager = AFHTTPSessionManager()
+        let params = settings.toParams()
+        
+        manager.GET(TMDBClient.SearchMovie, parameters: params, progress: nil, success: { (task, response) in
+            
+            var movies = [Movie]()
+            if let response = response as? NSDictionary {
+                if let dictionaries = response["results"] as? [NSDictionary] {
+                    for dictionary in dictionaries {
+                        movies.append(Movie(dictionary: dictionary))
+                    }
+                }
+            }
+            complete(movies: movies, error: nil)
+            }, failure:  { (task, error) in
+                
+                complete(movies: nil, error: error)
+        })
     }
 }
