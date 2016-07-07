@@ -14,24 +14,24 @@ class MovieCollectionCell: UICollectionViewCell {
     
     func setData(movie: Movie) {
         
-        guard (movie.posterPath != nil) else { return }
-        
-        let posterUrl = NSURL(string: TMDBClient.BaseImageW154Url + movie.posterPath!)
-        let request = NSURLRequest(URL: posterUrl!)
-        posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
+        if let posterUrl = movie.getPosterURLBySize(PosterSize.W154) {
             
-            // image come frome cache
-            if response == nil {
-                self.posterView.image = image
-            // image come from network
-            } else {
-                self.posterView.setImageWithFadeIn(image)
-            }
-            }, failure: { (request, response, error) in
+            let request = NSURLRequest(URL: posterUrl)
+            posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
                 
-                // process error here
-                debugPrint(error.localizedDescription)
-        })
+                // image come frome cache
+                if response == nil {
+                    self.posterView.image = image
+                    // image come from network
+                } else {
+                    self.posterView.setImageWithFadeIn(image)
+                }
+                }, failure: { (request, response, error) in
+                    
+                    // process error here
+                    debugPrint(error.localizedDescription)
+            })
+        }
     }
     
     func setTheme() {

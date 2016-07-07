@@ -23,13 +23,15 @@ class MovieDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        titleLabel.text = movie!.title
-        overviewLabel.text = movie!.overview
-        releaseDateLabel.text = movie!.releaseDate
+        guard let movie = movie else { return }
         
-        let thumbnail = TMDBClient.BaseImageW154Url + movie!.posterPath!
-        let poster = TMDBClient.BaseImageWOriginalUrl + movie!.posterPath!
-        posterView.setImageWithThumbnail(thumbnail, imageLink: poster)
+        titleLabel.text = movie.title
+        overviewLabel.text = movie.overview
+        releaseDateLabel.text = movie.releaseDate
+        
+        let thumbnail = movie.getPosterURLBySize(PosterSize.W154)
+        let poster = movie.getPosterURLBySize(PosterSize.Original)
+        posterView.setImageWithThumbnail(thumbnail, imageURL: poster)
         
         setScrollViewContentSize()
     }

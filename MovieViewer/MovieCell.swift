@@ -26,24 +26,24 @@ class MovieCell: UITableViewCell {
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
         
-        guard (movie.posterPath != nil) else { return }
-        
-        let posterUrl = NSURL(string: TMDBClient.BaseImageW154Url + movie.posterPath!)
-        let request = NSURLRequest(URL: posterUrl!)
-        posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
+        if let posterUrl = movie.getPosterURLBySize(PosterSize.W154) {
             
-            // image come frome cache
-            if response == nil {
-                self.posterView.image = image
-            // image come frome network
-            } else {
-                self.posterView.setImageWithFadeIn(image)
-            }
-        }, failure: { (request, response, error) in
-            
-            // process error here
-            debugPrint(error.localizedDescription)
-        })
+            let request = NSURLRequest(URL: posterUrl)
+            posterView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) in
+                
+                // image come frome cache
+                if response == nil {
+                    self.posterView.image = image
+                    // image come frome network
+                } else {
+                    self.posterView.setImageWithFadeIn(image)
+                }
+                }, failure: { (request, response, error) in
+                    
+                    // process error here
+                    debugPrint(error.localizedDescription)
+            })
+        }
     }
     
     func setTheme() {

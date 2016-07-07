@@ -22,4 +22,13 @@ struct Movie {
         posterPath = dictionary["poster_path"] as? String ?? nil
         releaseDate = dictionary["release_date"] as? String ?? ""
     }
+    
+    func getPosterURLBySize(size: PosterSize) -> NSURL? {
+        
+        guard let posterPathSafe = posterPath else { return nil }
+        
+        let posterPathBySize = TMDBClient.BaseImageUrl + size.rawValue + "/\(posterPathSafe)"
+        let url = NSURL(string: posterPathBySize)
+        return url
+    }
 }
