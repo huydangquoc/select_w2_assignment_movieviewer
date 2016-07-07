@@ -173,6 +173,18 @@
             </objects>
             <point key="canvasLocation" x="1113" y="659"/>
         </scene>
+        <!--Movies Search View Controller-->
+        <scene sceneID="fJl-3a-UKc">
+            <objects>
+                <viewController id="XrG-e6-9eK" customClass="MoviesSearchViewController" customModule="MovieViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7ac-vU-e68">
+                        <barButtonItem key="rightBarButtonItem" title="Filters" id="I9K-tV-peW"/>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2be-gl-F1C" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1113" y="1332"/>
+        </scene>
         <!--Movie Detail View Controller-->
         <scene sceneID="C9o-Cs-gFG">
             <objects>
@@ -336,6 +348,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2hS-du-lDg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="721" y="659.5"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="QKI-qp-7TI">
+            <objects>
+                <navigationController storyboardIdentifier="MoviesSearchNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="OJk-32-qfd" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="poo-Qe-vYb">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="XrG-e6-9eK" kind="relationship" relationship="rootViewController" id="SrX-yk-CYz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XpV-17-OJd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="721" y="1332"/>
         </scene>
     </scenes>
     <resources>
