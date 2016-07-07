@@ -22,7 +22,7 @@ struct SearchMovieParam {
 struct SearchMovieSettings {
     
     var query: String = ""              // CGI escaped string
-    var page: Int? = nil                // Minimum 1, maximum 1000.
+    var page: Int = 1                // Minimum 1, maximum 1000.
     var language: Int? = nil            // ISO 639-1 code.
     var includeAdult: Bool? = nil       // Toggle the inclusion of adult titles. Expected value is: true or false
     var year: Int? = nil                // Filter the results release dates to matches that include this value.
@@ -38,9 +38,7 @@ struct SearchMovieSettings {
         let escapedQuery = query.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
         params[SearchMovieParam.query] = escapedQuery
         // set page
-        if let page = page {
-            params[SearchMovieParam.page] = String(page)
-        }
+        params[SearchMovieParam.page] = String(page)
         // set language
         if let language = language {
             params[SearchMovieParam.language] = String(language)

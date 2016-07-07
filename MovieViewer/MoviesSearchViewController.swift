@@ -24,6 +24,7 @@ class MoviesSearchViewController: UIViewController {
         }
     }
     var filteredMovies: [Movie]?
+    var isMoreDataLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ class MoviesSearchViewController: UIViewController {
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
         navigationItem.titleView = searchBar
+        
         // init UI theme
         setTheme()
         hideError()
@@ -64,6 +66,23 @@ class MoviesSearchViewController: UIViewController {
     
     func searchMovies() {
         
+        // reset table data and page index
+        searchMovieSettings.page = 1
+        // load movies according to search settings
+        loadMovies(false)
+    }
+    
+    func loadMoreMovies() {
+        
+        // increase page index
+        searchMovieSettings.page += 1
+        print("load page \(searchMovieSettings.page)")
+        // load movies according to search settings
+        loadMovies(true)
+    }
+    
+    func loadMovies(loadMore: Bool) {
+        
         hideError()
         // Display HUD right before the request is made
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
@@ -71,17 +90,28 @@ class MoviesSearchViewController: UIViewController {
             
             // Hide HUD once the network request comes back (must be done on main UI thread)
             MBProgressHUD.hideHUDForView(self.view, animated: true)
+            // turn off data loading flag
+            self.isMoreDataLoading = false
             
             guard error == nil else {
+                // reset table data and page index
                 self.movies?.removeAll()
+                self.searchMovieSettings.page = 1
                 self.tableView.reloadData()
+                // show error
                 self.showError(error!)
                 return
             }
             
-            self.movies = movies
-            self.tableView.reloadData()
-            self.tableView.setContentOffset(CGPointZero, animated: true)
+            if loadMore {
+                self.movies! += movies!
+                self.tableView.reloadData()
+            } else {
+                self.movies = movies
+                self.tableView.reloadData()
+                // scroll to top
+                self.tableView.setContentOffset(CGPointZero, animated: true)
+            }
         }
     }
     
@@ -111,7 +141,6 @@ extension MoviesSearchViewController: UITableViewDataSource {
         
         return cell
     }
-    
 }
 
 extension MoviesSearchViewController: UITableViewDelegate {
@@ -145,5 +174,27 @@ extension MoviesSearchViewController: UISearchBarDelegate {
         searchMovieSettings.query = searchBar.text!
         searchBar.resignFirstResponder()
         searchMovies()
+    }
+}
+
+// Support infinity data loading
+extension MoviesSearchViewController: UIScrollViewDelegate {
+
+    // Tells the delegate when the user scrolls the content view within the receiver.
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        if !isMoreDataLoading {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
+                // turn on data loading flag
+                isMoreDataLoading = true
+                // load more movie
+                loadMoreMovies()
+            }
+        }
     }
 }
