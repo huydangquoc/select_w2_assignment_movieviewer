@@ -8,11 +8,15 @@
 
 import Foundation
 
+enum PosterSize: String {
+    
+    case W92 = "w92", W154 = "w154", W185 = "w185", W342 = "w342", W500 = "w500", W780 = "w780", Original = "original"
+}
+
 struct TMDBClient {
     
     static let ApiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-    static let BaseImageW154Url = "http://image.tmdb.org/t/p/w154"
-    static let BaseImageWOriginalUrl = "http://image.tmdb.org/t/p/original"
+    static let BaseImageUrl = "http://image.tmdb.org/t/p/"
     static let MovieNowPlaying = "http://api.themoviedb.org/3/movie/now_playing?api_key=\(ApiKey)"
     static let MovieTopRated = "http://api.themoviedb.org/3/movie/top_rated?api_key=\(ApiKey)"
     
