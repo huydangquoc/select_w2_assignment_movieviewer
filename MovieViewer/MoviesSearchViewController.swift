@@ -46,11 +46,31 @@ class MoviesSearchViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPathForCell(cell)
-        let movie = filteredMovies![indexPath!.row]
-        let movieDetailView = segue.destinationViewController as! MovieDetailViewController
-        movieDetailView.movie = movie
+        if segue.identifier == "filtersSegue" {
+            // we wrapped our FiltersViewController inside a UINavigationController
+            let navController = segue.destinationViewController as! UINavigationController
+            let filtersView = navController.topViewController as! FiltersViewController
+            filtersView.settings = self.searchMovieSettings
+        }
+        
+        if let cell = sender as? UITableViewCell {
+            let indexPath = tableView.indexPathForCell(cell)
+            let movie = filteredMovies![indexPath!.row]
+            let movieDetailView = segue.destinationViewController as! MovieDetailViewController
+            movieDetailView.movie = movie
+        }
+    }
+    
+    @IBAction func didSaveSettings(segue: UIStoryboardSegue) {
+        
+        let filtersView = segue.sourceViewController as! FiltersViewController
+        searchMovieSettings = filtersView.settings
+        searchMovies()
+    }
+    
+    @IBAction func didCancelSettingChanges(segue: UIStoryboardSegue) {
+        
+        // in this case, do nothing
     }
     
     func hideError() {
@@ -76,7 +96,6 @@ class MoviesSearchViewController: UIViewController {
         
         // increase page index
         searchMovieSettings.page += 1
-        print("load page \(searchMovieSettings.page)")
         // load movies according to search settings
         loadMovies(true)
     }
