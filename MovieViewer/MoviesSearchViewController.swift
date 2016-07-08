@@ -16,6 +16,7 @@ class MoviesSearchViewController: UIViewController {
     @IBOutlet weak var errorLabel: UILabel!
     
     var searchBar = UISearchBar()
+    var noDataLabel: UILabel!
     var searchMovieSettings = SearchMovieSettings()
     var movies: [Movie]? {
         didSet {
@@ -59,6 +60,23 @@ class MoviesSearchViewController: UIViewController {
             let movieDetailView = segue.destinationViewController as! MovieDetailViewController
             movieDetailView.movie = movie
         }
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        
+        var numOfSection = 0
+        if let filteredMovies = filteredMovies {
+            if filteredMovies.count > 0 {
+                tableView.separatorStyle = .SingleLine
+                numOfSection = 1
+                tableView.backgroundView = nil
+            } else {
+                tableView.backgroundView = noDataLabel
+                tableView.separatorStyle = .None
+            }
+        }
+        
+        return numOfSection
     }
     
     @IBAction func didSaveSettings(segue: UIStoryboardSegue) {
@@ -139,6 +157,20 @@ class MoviesSearchViewController: UIViewController {
         tableView.backgroundColor = UIColor.blackColor()
         // remove showing empty row for table incase network error
         tableView.tableFooterView = UIView()
+        
+        searchBar.tintColor = themeColor
+        let textFieldInsideSearchBar = searchBar.valueForKey("searchField") as? UITextField
+        textFieldInsideSearchBar?.textColor = themeColor
+        searchBar.keyboardAppearance = .Dark
+        
+        errorView.backgroundColor = UIColor.whiteColor()
+        errorView.alpha = 0.8
+        errorLabel.textColor = UIColor.redColor()
+        
+        noDataLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+        noDataLabel.text = "no results found"
+        noDataLabel.textColor = UIColor.whiteColor()
+        noDataLabel.textAlignment = .Center
     }
 }
 
