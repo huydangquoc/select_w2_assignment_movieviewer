@@ -26,6 +26,7 @@ class MoviesSearchViewController: UIViewController {
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
+    var favoriedMovies = [Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,14 +141,18 @@ class MoviesSearchViewController: UIViewController {
                 return
             }
             
+            // case load more data
             if loadMore {
                 self.movies! += movies!
                 self.tableView.reloadData()
+            // case newly search
             } else {
                 self.movies = movies
                 self.tableView.reloadData()
-                // scroll to top
-                self.tableView.setContentOffset(CGPointZero, animated: true)
+                // scroll to top row
+                if movies?.count > 0 {
+                    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: .Top, animated: true)
+                }
             }
         }
     }
@@ -189,8 +194,70 @@ extension MoviesSearchViewController: UITableViewDataSource {
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         cell.setTheme()
+        if let id = movie.id {
+            cell.toggleFavoriteStyle(favoriedMovies.contains(id))
+        }
         
         return cell
+    }
+    
+    // Asks the delegate for the actions to display in response to a swipe in the specified row.
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        
+        // setup favorite action
+        let isFavorited = favorites(indexPath.row)
+        let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
+        let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            // get movie id
+            if let id = self.filteredMovies![indexPath.row].id {
+                if isFavorited {
+                    self.favoriedMovies.removeAtIndex(self.favoriedMovies.indexOf(id)!)
+                } else {
+                    self.favoriedMovies.append(id)
+                }
+            }
+            // reload row style
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
+            // dismiss cell actions
+            tableView.editing = false
+        })
+        favoriteAction.backgroundColor = UIColor.darkGrayColor()
+        
+        // setup share action
+        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default, handler: nil)
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default, handler: nil)
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default, handler: nil)
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
+                
+                // // dimiss cell actions
+                tableView.editing = false
+            })
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        })
+        shareAction.backgroundColor = UIColor.lightGrayColor()
+        
+        return [shareAction, favoriteAction]
+    }
+    
+    func favorites(row: Int) -> Bool {
+        
+        var flag = false
+        // get movie id
+        if let id = self.filteredMovies![row].id {
+            if self.favoriedMovies.contains(id) {
+                flag = true
+            }
+        }
+        return flag
     }
 }
 

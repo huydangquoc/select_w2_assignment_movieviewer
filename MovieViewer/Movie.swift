@@ -10,6 +10,7 @@ import Foundation
 
 struct Movie {
     
+    var id: Int?
     var title: String?
     var overview: String?
     var posterPath: String?
@@ -17,10 +18,11 @@ struct Movie {
     
     init(dictionary: NSDictionary) {
         
-        title = dictionary["title"] as? String ?? ""
-        overview = dictionary["overview"] as? String ?? ""
+        id = dictionary["id"] as? Int
+        title = dictionary["title"] as? String
+        overview = dictionary["overview"] as? String
         posterPath = dictionary["poster_path"] as? String ?? nil
-        releaseDate = dictionary["release_date"] as? String ?? ""
+        releaseDate = dictionary["release_date"] as? String
     }
     
     func getPosterURLBySize(size: PosterSize) -> NSURL? {
