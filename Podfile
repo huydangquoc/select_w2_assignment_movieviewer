@@ -6,8 +6,8 @@ target 'MovieViewer' do
   use_frameworks!
 
   # Pods for MovieViewer
-  #pod 'AFNetworking'
-  #pod 'MBProgressHUD'
-  #pod 'RealmSwift'
+  pod 'AFNetworking'
+  pod 'MBProgressHUD'
+  pod 'RealmSwift'
   
 end
