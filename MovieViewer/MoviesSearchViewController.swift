@@ -8,6 +8,7 @@
 
 import UIKit
 import MBProgressHUD
+import RealmSwift
 
 class MoviesSearchViewController: UIViewController {
 
@@ -26,11 +27,20 @@ class MoviesSearchViewController: UIViewController {
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
-    var favoriedMovies = [Int]()
+    var realm: Realm!
+    var favoriedMovies: Results<FavoritedMovie>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // init realm instance
+        do {
+            realm = try Realm()
+            favoriedMovies = { self.realm.objects(FavoritedMovie) }()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
         // set delegate
         tableView.dataSource = self
         tableView.delegate = self
@@ -205,16 +215,16 @@ extension MoviesSearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         // setup favorite action
-        let isFavorited = favorites(indexPath.row)
+        let isFavorited = checkFavorite(indexPath.row)
         let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
         let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
             // get movie id
             if let id = self.filteredMovies![indexPath.row].id {
                 if isFavorited {
-                    self.favoriedMovies.removeAtIndex(self.favoriedMovies.indexOf(id)!)
+                    self.removeFavoriteMovie(id)
                 } else {
-                    self.favoriedMovies.append(id)
+                    self.addFavoriteMovie(id)
                 }
             }
             // reload row style
@@ -248,7 +258,7 @@ extension MoviesSearchViewController: UITableViewDataSource {
         return [shareAction, favoriteAction]
     }
     
-    func favorites(row: Int) -> Bool {
+    func checkFavorite(row: Int) -> Bool {
         
         var flag = false
         // get movie id
@@ -258,6 +268,32 @@ extension MoviesSearchViewController: UITableViewDataSource {
             }
         }
         return flag
+    }
+    
+    func addFavoriteMovie(id: Int) {
+        
+        do {
+            try realm.write() {
+                let favoritedMovie = FavoritedMovie()
+                favoritedMovie.id = id
+                realm.add(favoritedMovie)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func removeFavoriteMovie(id: Int) {
+        
+        let index = self.favoriedMovies.indexOf(id)
+        let favoritedMovie = self.favoriedMovies[index!]
+        do {
+            try realm.write() {
+                realm.delete(favoritedMovie)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
 }
 
