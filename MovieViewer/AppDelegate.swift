@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 let themeColor = UIColor.colorWithRGBHex(0xFFCC00)
 
@@ -21,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupTabBar()
         setTheme()
         
+        FIRApp.configure()
         return true
     }
 

@@ -9,6 +9,7 @@
 import UIKit
 import MBProgressHUD
 import RealmSwift
+import Firebase
 
 class MoviesSearchViewController: UIViewController {
 
@@ -27,19 +28,22 @@ class MoviesSearchViewController: UIViewController {
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
-    var realm: Realm!
-    var favoriedMovies: Results<FavoritedMovie>!
+    var ref: FIRDatabaseReference!
+    var favoritedMovies = [Int]()
+    var cellPathToReload: NSIndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // init realm instance
-        do {
-            realm = try Realm()
-            favoriedMovies = { self.realm.objects(FavoritedMovie) }()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
+        
+        // init firebase db instance
+        ref = FIRDatabase.database().reference()
+        // login as anonymous user
+        FIRAuth.auth()?.signInAnonymouslyWithCompletion({ (user: FIRUser?, error: NSError?) in
+            
+            if error != nil { print(error?.localizedDescription) }
+        })
+        // retreive data
+        retreiveFavoritedMovies()
         
         // set delegate
         tableView.dataSource = self
@@ -204,9 +208,7 @@ extension MoviesSearchViewController: UITableViewDataSource {
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         cell.setTheme()
-        if let id = movie.id {
-            cell.toggleFavoriteStyle(favoriedMovies.contains(id))
-        }
+        cell.toggleFavoriteStyle(checkFavorite(indexPath.row))
         
         return cell
     }
@@ -222,13 +224,13 @@ extension MoviesSearchViewController: UITableViewDataSource {
             // get movie id
             if let id = self.filteredMovies![indexPath.row].id {
                 if isFavorited {
-                    self.removeFavoriteMovie(id)
+                    self.ref.child("anonymous/favorited/\(id)").setValue(nil)
                 } else {
-                    self.addFavoriteMovie(id)
+                    self.ref.child("anonymous/favorited/\(id)").setValue(true)
                 }
             }
             // reload row style
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
+            self.cellPathToReload = indexPath
             // dismiss cell actions
             tableView.editing = false
         })
@@ -258,42 +260,35 @@ extension MoviesSearchViewController: UITableViewDataSource {
         return [shareAction, favoriteAction]
     }
     
+    func retreiveFavoritedMovies() {
+        
+        ref.child("anonymous/favorited").observeEventType(.Value, withBlock: { (snapshot: FIRDataSnapshot) in
+            
+            if snapshot.value != nil {
+                let dictionary = snapshot.value as! [String: AnyObject]
+                print(dictionary)
+                var favoritedMovies = [Int]()
+                for (key, _) in dictionary {
+                    favoritedMovies.append(Int(key)!)
+                }
+                self.favoritedMovies = favoritedMovies
+                
+                // reload cell style
+                if let indexPath = self.cellPathToReload {
+                    self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                    self.cellPathToReload = nil
+                }
+            }
+        })
+    }
+    
     func checkFavorite(row: Int) -> Bool {
         
         var flag = false
-        // get movie id
         if let id = self.filteredMovies![row].id {
-            if self.favoriedMovies.contains(id) {
-                flag = true
-            }
+            flag = favoritedMovies.contains(id)
         }
         return flag
-    }
-    
-    func addFavoriteMovie(id: Int) {
-        
-        do {
-            try realm.write() {
-                let favoritedMovie = FavoritedMovie()
-                favoritedMovie.id = id
-                realm.add(favoritedMovie)
-            }
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func removeFavoriteMovie(id: Int) {
-        
-        let index = self.favoriedMovies.indexOf(id)
-        let favoritedMovie = self.favoriedMovies[index!]
-        do {
-            try realm.write() {
-                realm.delete(favoritedMovie)
-            }
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
     }
 }
 
