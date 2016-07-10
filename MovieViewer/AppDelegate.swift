@@ -76,9 +76,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         vc2.tabBarItem.title = "Top Rated"
         vc2.tabBarItem.image = UIImage(named: "topRated")
         
+        // Setup the Search View Controller
+        let vc3 = storyboard.instantiateViewControllerWithIdentifier("MoviesSearchNavigationController") as! UINavigationController
+        vc3.tabBarItem.title = "Search"
+        vc3.tabBarItem.image = UIImage(named: "search")
+        
         // Set up the Tab Bar Controller to have two tabs
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [vc1, vc2]
+        tabBarController.viewControllers = [vc1, vc2, vc3]
         
         // Make the Tab Bar Controller the root view controller
         window?.rootViewController = tabBarController
