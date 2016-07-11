@@ -26,7 +26,6 @@ class MoviesSearchViewController: UIViewController {
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
-    var favoritedMovies = [Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -193,7 +192,6 @@ extension MoviesSearchViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
-        cell.isFavorited = favoritedMovies.contains(movie.id!)
         cell.setTheme()
         
         return cell
@@ -203,18 +201,11 @@ extension MoviesSearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         // setup favorite action
-        let isFavorited = checkFavorite(indexPath.row)
+        let isFavorited = filteredMovies![indexPath.row].isFavorited
         let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
         let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
-            // get movie id
-            if let id = self.filteredMovies![indexPath.row].id {
-                if isFavorited {
-                    self.favoritedMovies.removeAtIndex(self.favoritedMovies.indexOf(id)!)
-                } else {
-                    self.favoritedMovies.append(id)
-                }
-            }
+            self.filteredMovies![indexPath.row].isFavorited = !isFavorited
             // reload row style
             tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
             // dismiss cell actions
@@ -244,18 +235,6 @@ extension MoviesSearchViewController: UITableViewDataSource {
         shareAction.backgroundColor = UIColor.lightGrayColor()
         
         return [shareAction, favoriteAction]
-    }
-    
-    func checkFavorite(row: Int) -> Bool {
-        
-        var isFavorited = false
-        // get movie id
-        if let id = self.filteredMovies![row].id {
-            if self.favoritedMovies.contains(id) {
-                isFavorited = true
-            }
-        }
-        return isFavorited
     }
 }
 

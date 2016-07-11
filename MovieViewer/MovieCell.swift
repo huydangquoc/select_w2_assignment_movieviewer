@@ -14,7 +14,7 @@ class MovieCell: UITableViewCell {
     @IBOutlet weak var overviewLabel: UILabel!
     @IBOutlet weak var posterView: UIImageView!
     
-    var isFavorited = false
+    var isFavorited: Bool!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -48,6 +48,7 @@ class MovieCell: UITableViewCell {
                     debugPrint(error.localizedDescription)
             })
         }
+        isFavorited = movie.isFavorited
     }
     
     func setTheme() {
@@ -65,9 +66,9 @@ class MovieCell: UITableViewCell {
         toggleFavoriteStyle()
     }
     
-    func toggleFavoriteStyle() {
+    private func toggleFavoriteStyle() {
         
-        if isFavorited {
+        if isFavorited! {
             backgroundColor = UIColor.blueColor()
         } else {
             backgroundColor = UIColor.clearColor()

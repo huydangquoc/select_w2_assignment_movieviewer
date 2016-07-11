@@ -8,6 +8,8 @@
 
 import Foundation
 
+var favoritedMovies = [Int]()
+
 struct Movie {
     
     var id: Int?
@@ -15,6 +17,30 @@ struct Movie {
     var overview: String?
     var posterPath: String?
     var releaseDate: String?
+    var isFavorited: Bool {
+        get {
+            
+            if let id = self.id {
+                return favoritedMovies.contains(id)
+            }
+            return false
+        }
+        
+        set(newValue) {
+            
+            if let id = self.id {
+                if newValue {
+                    if !favoritedMovies.contains(id) {
+                        favoritedMovies.append(id)
+                    }
+                } else {
+                    if let index = favoritedMovies.indexOf(id) {
+                        favoritedMovies.removeAtIndex(index)
+                    }
+                }
+            }
+        }
+    }
     
     init(dictionary: NSDictionary) {
         
