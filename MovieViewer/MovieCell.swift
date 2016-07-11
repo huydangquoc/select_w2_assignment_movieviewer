@@ -14,8 +14,6 @@ class MovieCell: UITableViewCell {
     @IBOutlet weak var overviewLabel: UILabel!
     @IBOutlet weak var posterView: UIImageView!
     
-    var isFavorited = false
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -27,9 +25,9 @@ class MovieCell: UITableViewCell {
         
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
-        // erase previous image before loading new
-        posterView.image = nil
-        // retrieve poster
+        // earase previous image before loading new
+        self.posterView.image = nil
+        
         if let posterUrl = movie.getPosterURLBySize(PosterSize.W154) {
             
             let request = NSURLRequest(URL: posterUrl)
@@ -61,13 +59,11 @@ class MovieCell: UITableViewCell {
         let customSelectionView = UIView(frame: frame)
         customSelectionView.backgroundColor = themeColor
         selectedBackgroundView = customSelectionView
-        
-        toggleFavoriteStyle()
     }
     
-    func toggleFavoriteStyle() {
+    func toggleFavoriteStyle(flag: Bool) {
         
-        if isFavorited {
+        if flag {
             backgroundColor = UIColor.blueColor()
         } else {
             backgroundColor = UIColor.clearColor()
