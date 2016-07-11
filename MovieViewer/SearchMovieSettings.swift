@@ -23,7 +23,7 @@ struct SearchMovieSettings {
     
     var query: String = ""              // CGI escaped string
     var page: Int = 1                // Minimum 1, maximum 1000.
-    var language: Int? = nil            // ISO 639-1 code.
+    var language: String? = nil            // ISO 639-1 code.
     var includeAdult: Bool = false       // Toggle the inclusion of adult titles. Expected value is: true or false
     var year: Int? = nil                // Filter the results release dates to matches that include this value.
     var primaryReleaseYear: Int? = nil  // Filter the results so that only the primary release dates have this value.
@@ -41,7 +41,7 @@ struct SearchMovieSettings {
         params[SearchMovieParam.page] = String(page)
         // set language
         if let language = language {
-            params[SearchMovieParam.language] = String(language)
+            params[SearchMovieParam.language] = language
         }
         // set include_adult
         params[SearchMovieParam.includeAdult] = String(includeAdult)

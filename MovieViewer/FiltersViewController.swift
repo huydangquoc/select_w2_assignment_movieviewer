@@ -16,7 +16,7 @@ class FiltersViewController: UITableViewController {
     @IBOutlet weak var releaseYearPicker: UIPickerView!
     @IBOutlet weak var primaryReleaseYearPicker: UIPickerView!
     
-    var settings = SearchMovieSettings()
+    var settings: SearchMovieSettings!
     
     override func viewDidLoad() {
         super.viewDidLoad()

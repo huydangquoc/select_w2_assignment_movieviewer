@@ -75,9 +75,9 @@ struct TMDBClient {
                 }
             }
             complete(movies: movies, error: nil)
-            }, failure:  { (task, error) in
-                
-                complete(movies: nil, error: error)
+        }, failure:  { (task, error) in
+            
+            complete(movies: nil, error: error)
         })
     }
 }
