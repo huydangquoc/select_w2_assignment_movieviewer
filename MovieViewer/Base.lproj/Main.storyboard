@@ -472,7 +472,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show Adult Content" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Igq-UV-l4p">
                                                     <rect key="frame" x="20" y="13" width="137" height="18"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fbX-5e-RzN">
@@ -504,22 +504,22 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Release Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n2T-J8-SBc">
                                                     <rect key="frame" x="20" y="13" width="88" height="18"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <pickerView contentMode="scaleToFill" restorationIdentifier="releaseYearPicker" translatesAutoresizingMaskIntoConstraints="NO" id="91T-u9-bZm">
-                                                    <rect key="frame" x="175" y="2" width="125" height="40"/>
+                                                    <rect key="frame" x="175" y="0.0" width="125" height="43"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="VKe-N1-H3a"/>
                                                         <constraint firstAttribute="width" constant="125" id="kWC-Nq-7x6"/>
                                                     </constraints>
                                                 </pickerView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="n2T-J8-SBc" firstAttribute="centerY" secondItem="l3A-Rg-WUw" secondAttribute="centerY" id="9Sj-h4-itR"/>
+                                                <constraint firstAttribute="bottom" secondItem="91T-u9-bZm" secondAttribute="bottom" id="Glw-YI-3Rf"/>
                                                 <constraint firstItem="n2T-J8-SBc" firstAttribute="leading" secondItem="l3A-Rg-WUw" secondAttribute="leading" constant="20" id="MNw-Rx-kfe"/>
+                                                <constraint firstItem="91T-u9-bZm" firstAttribute="top" secondItem="l3A-Rg-WUw" secondAttribute="top" id="eiG-gw-m55"/>
                                                 <constraint firstAttribute="trailing" secondItem="91T-u9-bZm" secondAttribute="trailing" constant="20" id="hCz-Uy-hoQ"/>
-                                                <constraint firstItem="91T-u9-bZm" firstAttribute="centerY" secondItem="l3A-Rg-WUw" secondAttribute="centerY" id="mGq-HT-tH0"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -533,24 +533,22 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Primary Release Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Apd-62-V5B">
                                                     <rect key="frame" x="20" y="13" width="145" height="18"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <pickerView contentMode="scaleToFill" restorationIdentifier="primaryReleaseYearPicker" translatesAutoresizingMaskIntoConstraints="NO" id="pkl-oh-vuc">
-                                                    <rect key="frame" x="175" y="2" width="125" height="40"/>
+                                                    <rect key="frame" x="175" y="0.0" width="125" height="43"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="0o0-Nq-c8j"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="125" id="83i-7D-Anw"/>
                                                         <constraint firstAttribute="width" constant="125" id="VDI-xW-VOn"/>
-                                                        <constraint firstAttribute="height" constant="40" id="pr3-Z4-oZM"/>
                                                     </constraints>
                                                 </pickerView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="pkl-oh-vuc" firstAttribute="top" secondItem="HpU-Qz-4la" secondAttribute="top" id="7a0-D3-hyx"/>
                                                 <constraint firstItem="Apd-62-V5B" firstAttribute="leading" secondItem="HpU-Qz-4la" secondAttribute="leading" constant="20" id="SGL-3G-Pjz"/>
+                                                <constraint firstAttribute="bottom" secondItem="pkl-oh-vuc" secondAttribute="bottom" id="bK1-iA-tc9"/>
                                                 <constraint firstAttribute="trailing" secondItem="pkl-oh-vuc" secondAttribute="trailing" constant="20" id="cia-cf-kIc"/>
                                                 <constraint firstItem="Apd-62-V5B" firstAttribute="centerY" secondItem="HpU-Qz-4la" secondAttribute="centerY" id="xhc-RV-W3I"/>
-                                                <constraint firstItem="pkl-oh-vuc" firstAttribute="centerY" secondItem="HpU-Qz-4la" secondAttribute="centerY" id="z3X-nd-JD6"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
