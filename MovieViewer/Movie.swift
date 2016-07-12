@@ -15,6 +15,7 @@ struct Movie {
     var overview: String?
     var posterPath: String?
     var releaseDate: String?
+    var isFavorited = false
     
     init(dictionary: NSDictionary) {
         

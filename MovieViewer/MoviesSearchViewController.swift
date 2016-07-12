@@ -28,7 +28,8 @@ class MoviesSearchViewController: UIViewController {
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
     var realm: Realm!
-    var favoriedMovies: Results<FavoritedMovie>!
+    var favoritedMovies: Results<FavoritedMovie>!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +37,7 @@ class MoviesSearchViewController: UIViewController {
         // init realm instance
         do {
             realm = try Realm()
-            favoriedMovies = { self.realm.objects(FavoritedMovie) }()
+            favoritedMovies = realm.objects(FavoritedMovie.self)
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -201,12 +202,11 @@ extension MoviesSearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
-        let movie = filteredMovies![indexPath.row]
+        var movie = filteredMovies![indexPath.row]
+        let predicate = NSPredicate(format: "id = %d", movie.id!)
+        movie.isFavorited = favoritedMovies.filter(predicate).count == 1
         cell.setData(movie)
         cell.setTheme()
-        if let id = movie.id {
-            cell.toggleFavoriteStyle(favoriedMovies.contains(id))
-        }
         
         return cell
     }
@@ -215,7 +215,7 @@ extension MoviesSearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         // setup favorite action
-        let isFavorited = checkFavorite(indexPath.row)
+        let isFavorited = filteredMovies![indexPath.row].isFavorited
         let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
         let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
@@ -258,18 +258,6 @@ extension MoviesSearchViewController: UITableViewDataSource {
         return [shareAction, favoriteAction]
     }
     
-    func checkFavorite(row: Int) -> Bool {
-        
-        var flag = false
-        // get movie id
-        if let id = self.filteredMovies![row].id {
-            if self.favoriedMovies.contains(id) {
-                flag = true
-            }
-        }
-        return flag
-    }
-    
     func addFavoriteMovie(id: Int) {
         
         do {
@@ -285,8 +273,8 @@ extension MoviesSearchViewController: UITableViewDataSource {
     
     func removeFavoriteMovie(id: Int) {
         
-        let index = self.favoriedMovies.indexOf(id)
-        let favoritedMovie = self.favoriedMovies[index!]
+        let index = self.favoritedMovies.indexOf(id)
+        let favoritedMovie = self.favoritedMovies[index!]
         do {
             try realm.write() {
                 realm.delete(favoritedMovie)
