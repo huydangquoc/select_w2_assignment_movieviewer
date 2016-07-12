@@ -14,11 +14,6 @@ enum PosterSize: String {
     case W92 = "w92", W154 = "w154", W185 = "w185", W342 = "w342", W500 = "w500", W780 = "w780", Original = "original"
 }
 
-enum PosterSize: String {
-    
-    case W92 = "w92", W154 = "w154", W185 = "w185", W342 = "w342", W500 = "w500", W780 = "w780", Original = "original"
-}
-
 struct TMDBClient {
     
     static let ApiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
