@@ -54,7 +54,7 @@ class MoviesViewController: UIViewController {
         }
     }
     var displayMode = DisplayMode.Grid
-    var favoriteProvider = LocalFavoriteProvider()
+    var favoriteProvider = RealmFavoriteProvider()
     
     // Called after the controller's view is loaded into memory
     override func viewDidLoad() {

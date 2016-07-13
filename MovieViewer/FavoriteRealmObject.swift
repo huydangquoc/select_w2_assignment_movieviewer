@@ -9,23 +9,23 @@
 import Foundation
 import RealmSwift
 
-class FavoritedMovie: Object {
+class FavoriteRealmObject: Object {
     
     dynamic var id = 0
 }
 
-extension Results where T: FavoritedMovie {
+extension Results where T: FavoriteRealmObject {
     
     internal func contains(id: Int) -> Bool {
         
-        return contains({ (favoritedMovie: FavoritedMovie) -> Bool in
+        return contains({ (favoritedMovie: FavoriteRealmObject) -> Bool in
             return favoritedMovie.id == id
         })
     }
     
     internal func indexOf(id: Int) -> Results.Index? {
         
-        return indexOf({ (favoritedMovie: FavoritedMovie) -> Bool in
+        return indexOf({ (favoritedMovie: FavoriteRealmObject) -> Bool in
             return favoritedMovie.id == id
         })
     }

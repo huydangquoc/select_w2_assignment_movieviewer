@@ -27,7 +27,7 @@ class MoviesSearchViewController: UIViewController {
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
-    var favoriteProvider = LocalFavoriteProvider()
+    var favoriteProvider = RealmFavoriteProvider()
     
     override func viewDidLoad() {
         super.viewDidLoad()
