@@ -8,39 +8,14 @@
 
 import Foundation
 
-var favoritedMovies = [Int]()
-
-struct Movie {
+public class Movie {
     
     var id: Int?
     var title: String?
     var overview: String?
     var posterPath: String?
     var releaseDate: String?
-    var isFavorited: Bool {
-        get {
-            
-            if let id = self.id {
-                return favoritedMovies.contains(id)
-            }
-            return false
-        }
-        
-        set(newValue) {
-            
-            if let id = self.id {
-                if newValue {
-                    if !favoritedMovies.contains(id) {
-                        favoritedMovies.append(id)
-                    }
-                } else {
-                    if let index = favoritedMovies.indexOf(id) {
-                        favoritedMovies.removeAtIndex(index)
-                    }
-                }
-            }
-        }
-    }
+    var isFavorited: Bool = false
     
     init(dictionary: NSDictionary) {
         
@@ -58,5 +33,33 @@ struct Movie {
         let posterPathBySize = TMDBClient.BaseImageUrl + size.rawValue + "/\(posterPathSafe)"
         let url = NSURL(string: posterPathBySize)
         return url
+    }
+}
+
+extension Movie: FavoriteObject {
+
+    // return favorite object id
+    public func getId() -> Int {
+        
+        return id!
+    }
+    
+    // set favorite value for favorite object
+    public func setFavorite(isFavorited: Bool) {
+        
+        self.isFavorited = isFavorited
+    }
+}
+
+extension Array where Element: Movie {
+    
+    // get list movie id
+    func movieIds() -> [Int] {
+        
+        var ids = [Int]()
+        for movie in self {
+            ids.append(movie.id!)
+        }
+        return ids
     }
 }

@@ -39,6 +39,7 @@ class MoviesViewController: UIViewController {
         didSet {
             
             filteredMovies = movies
+            favoriteProvider.populateData((filteredMovies?.movieIds())!)
         }
     }
     var filteredMovies: [Movie]?
@@ -53,6 +54,7 @@ class MoviesViewController: UIViewController {
         }
     }
     var displayMode = DisplayMode.Grid
+    var favoriteProvider = LocalFavoriteProvider()
     
     // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
@@ -64,6 +66,7 @@ class MoviesViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         searchBar.delegate = self
+        favoriteProvider.dataSource = self
         
         // setup controls, UI
         setupRefreshControls()
@@ -246,7 +249,6 @@ extension MoviesViewController: UITableViewDataSource {
         
         return cell
     }
-    
 }
 
 extension MoviesViewController: UITableViewDelegate {
@@ -255,6 +257,46 @@ extension MoviesViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    // Asks the delegate for the actions to display in response to a swipe in the specified row.
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        
+        // setup favorite action
+        let movie = filteredMovies![indexPath.row]
+        let actionTitle = movie.isFavorited ? "Unfavorite" : "Favorite"
+        let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            self.favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+            // reload row style
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
+            // dismiss cell actions
+            tableView.editing = false
+        })
+        favoriteAction.backgroundColor = UIColor.darkGrayColor()
+        
+        // setup share action
+        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default, handler: nil)
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default, handler: nil)
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default, handler: nil)
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
+                
+                // // dimiss cell actions
+                tableView.editing = false
+            })
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        })
+        shareAction.backgroundColor = UIColor.lightGrayColor()
+        
+        return [shareAction, favoriteAction]
     }
 }
 
@@ -313,5 +355,18 @@ extension MoviesViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDataSource {
+    
+    // get favorite object by object id
+    func favoriteProvider(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject {
+        
+        let movies = filteredMovies?.filter({ (movie) -> Bool in
+            return movie.id == objectId
+        })
+        
+        return movies![0]
     }
 }
