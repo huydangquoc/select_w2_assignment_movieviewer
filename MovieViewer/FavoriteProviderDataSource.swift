@@ -11,5 +11,5 @@ import Foundation
 public protocol FavoriteProviderDataSource {
 
     // get favorite object by object id
-    func favoriteProvider(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject?
 }

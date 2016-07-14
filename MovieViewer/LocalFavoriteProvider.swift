@@ -12,11 +12,15 @@ var favoritedMovies = [Int]()
 
 public class LocalFavoriteProvider: FavoriteProvider {
     
+    public override func prepare(complete: ((error: NSError?) -> Void) ) {
+        complete(error: nil)
+    }
+    
     // populate favorite values to list of favorite object
     public override func populateData(favoriteObjectIds: [Int]) {
         
         for objectId in favoriteObjectIds {
-            let object = dataSource?.favoriteProvider(self, favoriteObjectId: objectId)
+            let object = dataSource?.getFavoriteObjectById(self, favoriteObjectId: objectId)
             object?.setFavorite(favoritedMovies.contains(objectId))
         }
     }
@@ -24,16 +28,18 @@ public class LocalFavoriteProvider: FavoriteProvider {
     // save favorite value for a favorite object to database of provider
     public override func saveFavorite(favoriteObject: FavoriteObject, isFavorited: Bool) {
         
-        let objectId = favoriteObject.getId()
+        let objectId = favoriteObject.getFavoriteObjectId()
         if isFavorited {
             if !favoritedMovies.contains(objectId) {
                 favoritedMovies.append(objectId)
-                favoriteObject.setFavorite(isFavorited)
+                populateData([objectId])
+                delegate?.favoriteProvider(self, objectIdDidChangedFavoriteValue: objectId)
             }
         } else {
             if let index = favoritedMovies.indexOf(objectId) {
                 favoritedMovies.removeAtIndex(index)
-                favoriteObject.setFavorite(isFavorited)
+                populateData([objectId])
+                delegate?.favoriteProvider(self, objectIdDidChangedFavoriteValue: objectId)
             }
         }
     }

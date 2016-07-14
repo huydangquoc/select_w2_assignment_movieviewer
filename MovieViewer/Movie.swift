@@ -39,7 +39,7 @@ public class Movie {
 extension Movie: FavoriteObject {
 
     // return favorite object id
-    public func getId() -> Int {
+    public func getFavoriteObjectId() -> Int {
         
         return id!
     }

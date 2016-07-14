@@ -11,7 +11,7 @@ import Foundation
 public protocol FavoriteObject {
     
     // return favorite object id
-    func getId() -> Int
+    func getFavoriteObjectId() -> Int
     
     // set favorite value for favorite object
     func setFavorite(isFavorited: Bool) -> Void

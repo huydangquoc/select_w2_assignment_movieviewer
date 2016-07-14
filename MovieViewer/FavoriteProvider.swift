@@ -11,6 +11,13 @@ import Foundation
 public class FavoriteProvider {
     
     public var dataSource: FavoriteProviderDataSource?
+    public var delegate: FavoriteProviderDelegate?
+    
+    public func prepare(complete: ((error: NSError?) -> Void) ) {
+        
+        // empty implementation
+        // subclass must implement this method
+    }
     
     // populate favorite values to list of favorite object
     public func populateData(favoriteObjectIds: [Int]) {

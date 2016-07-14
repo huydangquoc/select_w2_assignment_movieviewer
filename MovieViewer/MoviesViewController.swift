@@ -54,12 +54,12 @@ class MoviesViewController: UIViewController {
         }
     }
     var displayMode = DisplayMode.Grid
-    var favoriteProvider = RealmFavoriteProvider()
+    var favoriteProvider = FirebaseFavoriteProvider()
     
     // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // set delegate
         tableView.dataSource = self
         tableView.delegate = self
@@ -67,6 +67,7 @@ class MoviesViewController: UIViewController {
         collectionView.delegate = self
         searchBar.delegate = self
         favoriteProvider.dataSource = self
+        favoriteProvider.delegate = self
         
         // setup controls, UI
         setupRefreshControls()
@@ -74,8 +75,21 @@ class MoviesViewController: UIViewController {
         defaultNavigationTitleView = navigationItem.titleView
         setTheme()
         
-        // load data to view
-        loadMovies()
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // prepare favorite provider
+        favoriteProvider.prepare { (error) in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            if error != nil {
+                print(error?.localizedDescription)
+                return
+            }
+            
+            // load data to view
+            self.loadMovies()
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -361,12 +375,39 @@ extension MoviesViewController: UISearchBarDelegate {
 extension MoviesViewController: FavoriteProviderDataSource {
     
     // get favorite object by object id
-    func favoriteProvider(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject {
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject? {
         
+        // get favorite object by id
         let movies = filteredMovies?.filter({ (movie) -> Bool in
-            return movie.id == objectId
+            return movie.getFavoriteObjectId() == objectId
         })
+        if movies?.count > 0 {
+            return movies![0]
+        }
+        return nil
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDelegate {
+    
+    // object Id did changed favorite value
+    func favoriteProvider(favoriteProvider: FavoriteProvider, objectIdDidChangedFavoriteValue objectId: Int) {
         
-        return movies![0]
+        // get row index
+        let index = filteredMovies?.indexOf({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        // get list of visible cell
+        let indexPaths = tableView.indexPathsForVisibleRows
+        
+        guard index != nil else { return }
+        guard indexPaths != nil else { return }
+        
+        for indexPath in indexPaths! {
+            if indexPath.row == index {
+                // reload row style
+                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
+            }
+        }
     }
 }
