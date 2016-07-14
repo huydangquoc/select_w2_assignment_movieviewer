@@ -8,6 +8,7 @@
 
 import UIKit
 import MBProgressHUD
+import Social
 
 class MoviesSearchViewController: UIViewController {
 
@@ -232,6 +233,8 @@ extension MoviesSearchViewController: UITableViewDelegate {
         let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
             self.favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+            // reload row style
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
             // dismiss cell actions
             tableView.editing = false
         })
@@ -241,9 +244,38 @@ extension MoviesSearchViewController: UITableViewDelegate {
         let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
             let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
-            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default, handler: nil)
-            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default, handler: nil)
-            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default, handler: nil)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                // Check if sharing to Twitter is possible.
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                    // Initialize the default view controller for sharing the post.
+                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+                    twitterComposeVC.setInitialText("Why this movie get so hight rating? Could you tell me?")
+                    // Display the compose view controller.
+                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not logged in to your Twitter account.")
+                }
+            }
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    // Initialize the default view controller for sharing the post.
+                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                    facebookComposeVC.setInitialText("\(movie.overview!)")
+                    // Display the compose view controller.
+                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not connected to your Facebook account.")
+                }
+            }
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                let activityViewController = UIActivityViewController(activityItems: [movie.overview!], applicationActivities: nil)
+                activityViewController.excludedActivityTypes = [UIActivityTypeMail]
+                self.presentViewController(activityViewController, animated: true, completion: nil)
+            }
             let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
                 
                 // // dimiss cell actions
@@ -259,6 +291,13 @@ extension MoviesSearchViewController: UITableViewDelegate {
         shareAction.backgroundColor = UIColor.lightGrayColor()
         
         return [shareAction, favoriteAction]
+    }
+    
+    func showAlertMessage(message: String!) {
+        
+        let alertController = UIAlertController(title: "Movie Viewer", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }
 
