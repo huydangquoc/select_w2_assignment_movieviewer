@@ -12,5 +12,6 @@ target 'MovieViewer' do
   pod 'Firebase'
   pod 'Firebase/Database'
   pod 'Firebase/Auth'
+  pod 'MGSwipeTableCell'
   
 end

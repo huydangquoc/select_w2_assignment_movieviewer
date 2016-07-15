@@ -10,6 +10,7 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 import Social
+import MGSwipeTableCell
 
 enum MoviesViewMode {
     
@@ -226,6 +227,8 @@ class MoviesViewController: UIViewController {
     
     func setTheme() {
         
+        hideError()
+        
         tableView.backgroundColor = UIColor.blackColor()
         collectionView.backgroundColor = UIColor.blackColor()
         
@@ -261,6 +264,7 @@ extension MoviesViewController: UITableViewDataSource {
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         cell.setTheme()
+        cell.delegate = self
         
         return cell
     }
@@ -272,82 +276,6 @@ extension MoviesViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    }
-    
-    // Asks the delegate for the actions to display in response to a swipe in the specified row.
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        
-        // setup favorite action
-        let movie = filteredMovies![indexPath.row]
-        let actionTitle = movie.isFavorited ? "Unfavorite" : "Favorite"
-        let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
-            
-            self.favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
-            // reload row style
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
-            // dismiss cell actions
-            tableView.editing = false
-        })
-        favoriteAction.backgroundColor = UIColor.darkGrayColor()
-        
-        // setup share action
-        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
-            
-            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
-            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
-                
-                // Check if sharing to Twitter is possible.
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
-                    // Initialize the default view controller for sharing the post.
-                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
-                    twitterComposeVC.setInitialText("Why this movie get so hight rating? Could you tell me?")
-                    // Display the compose view controller.
-                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
-                }
-                else {
-                    self.showAlertMessage("You are not logged in to your Twitter account.")
-                }
-            }
-            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
-                    // Initialize the default view controller for sharing the post.
-                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-                    facebookComposeVC.setInitialText("\(movie.overview!)")
-                    // Display the compose view controller.
-                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
-                }
-                else {
-                    self.showAlertMessage("You are not connected to your Facebook account.")
-                }
-            }
-            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
-                
-                let activityViewController = UIActivityViewController(activityItems: [movie.overview!], applicationActivities: nil)
-                activityViewController.excludedActivityTypes = [UIActivityTypeMail]
-                self.presentViewController(activityViewController, animated: true, completion: nil)
-            }
-            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
-                
-                // // dimiss cell actions
-                tableView.editing = false
-            })
-            
-            shareMenu.addAction(twitterAction)
-            shareMenu.addAction(facebookAction)
-            shareMenu.addAction(moreAction)
-            shareMenu.addAction(doneAction)
-            self.presentViewController(shareMenu, animated: true, completion: nil)
-        })
-        shareAction.backgroundColor = UIColor.lightGrayColor()
-        
-        return [shareAction, favoriteAction]
-    }
-    
-    func showAlertMessage(message: String!) {
-        
-        let alertController = UIAlertController(title: "Movie Viewer", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        presentViewController(alertController, animated: true, completion: nil)
     }
 }
 
@@ -446,5 +374,89 @@ extension MoviesViewController: FavoriteProviderDelegate {
                 tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
             }
         }
+    }
+}
+
+extension MoviesViewController: MGSwipeTableCellDelegate {
+    
+    func swipeTableCell(cell: MGSwipeTableCell!, tappedButtonAtIndex index: Int, direction: MGSwipeDirection, fromExpansion: Bool) -> Bool
+    {
+        switch (direction) {
+        case .LeftToRight:
+            // tap on Favorite button
+            if index == 0 {
+                tapFavoriteButton(cell)
+            }
+        case .RightToLeft:
+            // tap on Share button
+            if index == 0 {
+                tapShareButton(cell)
+            }
+        }
+        
+        return true
+    }
+    
+    private func tapFavoriteButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            let movie = filteredMovies![indexPath.row]
+            favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+        }
+    }
+    
+    private func tapShareButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            
+            let movie = filteredMovies![indexPath.row]
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                // Check if sharing to Twitter is possible.
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                    // Initialize the default view controller for sharing the post.
+                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+                    twitterComposeVC.setInitialText("Why this movie get so hight rating? Could you tell me?")
+                    // Display the compose view controller.
+                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not logged in to your Twitter account.")
+                }
+            }
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    // Initialize the default view controller for sharing the post.
+                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                    facebookComposeVC.setInitialText("\(movie.overview!)")
+                    // Display the compose view controller.
+                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not connected to your Facebook account.")
+                }
+            }
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                let activityViewController = UIActivityViewController(activityItems: [movie.overview!], applicationActivities: nil)
+                activityViewController.excludedActivityTypes = [UIActivityTypeMail]
+                self.presentViewController(activityViewController, animated: true, completion: nil)
+            }
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: nil)
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        }
+    }
+    
+    private func showAlertMessage(message: String!) {
+
+        let alertController = UIAlertController(title: "Movie Viewer", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }

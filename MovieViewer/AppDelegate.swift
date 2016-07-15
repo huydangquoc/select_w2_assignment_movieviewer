@@ -10,6 +10,10 @@ import UIKit
 import Firebase
 
 let themeColor = UIColor.colorWithRGBHex(0xFFCC00)
+let deepSkyBlueColor = UIColor.colorWithRGBHex(0x00bfff)
+let b3ecffBlueColor = UIColor.colorWithRGBHex(0xb3ecff)
+let b3ffb3GreenColor = UIColor.colorWithRGBHex(0xb3ffb3)
+let ff9999RedColor = UIColor.colorWithRGBHex(0xff9999)
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

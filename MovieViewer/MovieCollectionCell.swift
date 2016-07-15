@@ -52,7 +52,7 @@ class MovieCollectionCell: UICollectionViewCell {
     private func toggleFavoriteStyle() {
         
         if isFavorited! {
-            backgroundColor = UIColor.blueColor()
+            backgroundColor = b3ecffBlueColor
         } else {
             backgroundColor = UIColor.clearColor()
         }

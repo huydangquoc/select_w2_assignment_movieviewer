@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MGSwipeTableCell
 
-class MovieCell: UITableViewCell {
+class MovieCell: MGSwipeTableCell  {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
@@ -63,15 +64,46 @@ class MovieCell: UITableViewCell {
         customSelectionView.backgroundColor = themeColor
         selectedBackgroundView = customSelectionView
         
+        setActionButtons()
         toggleFavoriteStyle()
     }
     
     private func toggleFavoriteStyle() {
         
         if isFavorited! {
-            backgroundColor = UIColor.blueColor()
+            backgroundColor = b3ecffBlueColor
+            titleLabel.textColor = UIColor.blackColor()
+            overviewLabel.textColor = UIColor.blackColor()
         } else {
             backgroundColor = UIColor.clearColor()
+            titleLabel.textColor = UIColor.whiteColor()
+            overviewLabel.textColor = UIColor.whiteColor()
         }
+    }
+    
+    private func setActionButtons() {
+        
+        var isFavor = false
+        if let isFavorited = isFavorited {
+            isFavor = isFavorited
+        }
+        
+        let loveIcon = UIImage(named: "love")
+        let unLoveIcon = UIImage(named: "unlove")
+        let shareIcon = UIImage(named: "share")
+        
+        //configure left buttons
+        let favoriteBackground = isFavor ? ff9999RedColor : deepSkyBlueColor
+        let favoriteIcon: UIImage? = isFavor ? unLoveIcon : loveIcon
+        let favoriteButton = MGSwipeButton(title: "", icon: favoriteIcon, backgroundColor: favoriteBackground)
+        leftButtons = [favoriteButton]
+        leftSwipeSettings.transition = MGSwipeTransition.Rotate3D
+        leftExpansion.buttonIndex = 0
+        leftExpansion.fillOnTrigger = true
+        
+        //configure right buttons
+        let shareButton = MGSwipeButton(title: "", icon: shareIcon, backgroundColor: b3ffb3GreenColor)
+        rightButtons = [shareButton]
+        rightSwipeSettings.transition = MGSwipeTransition.Rotate3D
     }
 }
