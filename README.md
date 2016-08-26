@@ -1,8 +1,8 @@
-# Project 1 - *Movie Viewer*
+# Project - *Movie Viewer*
 
 **Movie Viewer** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **16** hours spent in total
+Time spent: **24** hours spent in total
 
 ## User Stories
 
@@ -31,9 +31,7 @@ The following **additional** features are implemented:
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
-
-<img src='http://i.imgur.com/COuZVTr.gifv' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
+<img src="http://i.imgur.com/enRcDiJ.gif"/>
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
