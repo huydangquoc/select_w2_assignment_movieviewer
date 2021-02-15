@@ -9,6 +9,8 @@
 import UIKit
 import AFNetworking
 import MBProgressHUD
+import Social
+import MGSwipeTableCell
 
 enum MoviesViewMode {
     
@@ -39,6 +41,7 @@ class MoviesViewController: UIViewController {
         didSet {
             
             filteredMovies = movies
+            favoriteProvider.populateData((filteredMovies?.movieIds())!)
         }
     }
     var filteredMovies: [Movie]?
@@ -53,17 +56,20 @@ class MoviesViewController: UIViewController {
         }
     }
     var displayMode = DisplayMode.Grid
+    var favoriteProvider = FirebaseFavoriteProvider()
     
     // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // set delegate
         tableView.dataSource = self
         tableView.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
         searchBar.delegate = self
+        favoriteProvider.dataSource = self
+        favoriteProvider.delegate = self
         
         // setup controls, UI
         setupRefreshControls()
@@ -71,8 +77,21 @@ class MoviesViewController: UIViewController {
         defaultNavigationTitleView = navigationItem.titleView
         setTheme()
         
-        // load data to view
-        loadMovies()
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // prepare favorite provider
+        favoriteProvider.prepare { (error) in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            if error != nil {
+                print(error?.localizedDescription)
+                return
+            }
+            
+            // load data to view
+            self.loadMovies()
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -208,6 +227,8 @@ class MoviesViewController: UIViewController {
     
     func setTheme() {
         
+        hideError()
+        
         tableView.backgroundColor = UIColor.blackColor()
         collectionView.backgroundColor = UIColor.blackColor()
         
@@ -243,10 +264,10 @@ extension MoviesViewController: UITableViewDataSource {
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         cell.setTheme()
+        cell.delegate = self
         
         return cell
     }
-    
 }
 
 extension MoviesViewController: UITableViewDelegate {
@@ -313,5 +334,129 @@ extension MoviesViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDataSource {
+    
+    // get favorite object by object id
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject? {
+        
+        // get favorite object by id
+        let movies = filteredMovies?.filter({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        if movies?.count > 0 {
+            return movies![0]
+        }
+        return nil
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDelegate {
+    
+    // object Id did changed favorite value
+    func favoriteProvider(favoriteProvider: FavoriteProvider, objectIdDidChangedFavoriteValue objectId: Int) {
+        
+        // get row index
+        let index = filteredMovies?.indexOf({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        // get list of visible cell
+        let indexPaths = tableView.indexPathsForVisibleRows
+        
+        guard index != nil else { return }
+        guard indexPaths != nil else { return }
+        
+        for indexPath in indexPaths! {
+            if indexPath.row == index {
+                // reload row style
+                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
+            }
+        }
+    }
+}
+
+extension MoviesViewController: MGSwipeTableCellDelegate {
+    
+    func swipeTableCell(cell: MGSwipeTableCell!, tappedButtonAtIndex index: Int, direction: MGSwipeDirection, fromExpansion: Bool) -> Bool
+    {
+        switch (direction) {
+        case .LeftToRight:
+            // tap on Favorite button
+            if index == 0 {
+                tapFavoriteButton(cell)
+            }
+        case .RightToLeft:
+            // tap on Share button
+            if index == 0 {
+                tapShareButton(cell)
+            }
+        }
+        
+        return true
+    }
+    
+    private func tapFavoriteButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            let movie = filteredMovies![indexPath.row]
+            favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+        }
+    }
+    
+    private func tapShareButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            
+            let movie = filteredMovies![indexPath.row]
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                // Check if sharing to Twitter is possible.
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                    // Initialize the default view controller for sharing the post.
+                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+                    twitterComposeVC.setInitialText("Why this movie get so hight rating? Could you tell me?")
+                    // Display the compose view controller.
+                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not logged in to your Twitter account.")
+                }
+            }
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    // Initialize the default view controller for sharing the post.
+                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                    facebookComposeVC.setInitialText("\(movie.overview!)")
+                    // Display the compose view controller.
+                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not connected to your Facebook account.")
+                }
+            }
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                let activityViewController = UIActivityViewController(activityItems: [movie.overview!], applicationActivities: nil)
+                activityViewController.excludedActivityTypes = [UIActivityTypeMail]
+                self.presentViewController(activityViewController, animated: true, completion: nil)
+            }
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: nil)
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        }
+    }
+    
+    private func showAlertMessage(message: String!) {
+
+        let alertController = UIAlertController(title: "Movie Viewer", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }

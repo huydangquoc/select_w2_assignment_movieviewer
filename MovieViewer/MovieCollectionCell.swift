@@ -12,6 +12,8 @@ class MovieCollectionCell: UICollectionViewCell {
     
     @IBOutlet weak var posterView: UIImageView!
     
+    var isFavorited: Bool!
+    
     func setData(movie: Movie) {
         
         if let posterUrl = movie.getPosterURLBySize(PosterSize.W154) {
@@ -32,6 +34,7 @@ class MovieCollectionCell: UICollectionViewCell {
                     debugPrint(error.localizedDescription)
             })
         }
+        isFavorited = movie.isFavorited
     }
     
     func setTheme() {
@@ -42,5 +45,16 @@ class MovieCollectionCell: UICollectionViewCell {
         let customSelectionView = UIView(frame: frame)
         customSelectionView.backgroundColor = themeColor
         selectedBackgroundView = customSelectionView
+        
+        toggleFavoriteStyle()
+    }
+    
+    private func toggleFavoriteStyle() {
+        
+        if isFavorited! {
+            backgroundColor = b3ecffBlueColor
+        } else {
+            backgroundColor = UIColor.clearColor()
+        }
     }
 }

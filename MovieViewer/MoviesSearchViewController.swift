@@ -8,6 +8,8 @@
 
 import UIKit
 import MBProgressHUD
+import Social
+import MGSwipeTableCell
 
 class MoviesSearchViewController: UIViewController {
 
@@ -22,10 +24,12 @@ class MoviesSearchViewController: UIViewController {
         didSet {
             
             filteredMovies = movies
+            favoriteProvider.populateData((filteredMovies?.movieIds())!)
         }
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
+    var favoriteProvider = FirebaseFavoriteProvider()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +38,8 @@ class MoviesSearchViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         searchBar.delegate = self
+        favoriteProvider.dataSource = self
+        favoriteProvider.delegate = self
         
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
@@ -41,7 +47,19 @@ class MoviesSearchViewController: UIViewController {
         
         // init UI theme
         setTheme()
-        hideError()
+        
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // prepare favorite provider
+        favoriteProvider.prepare { (error) in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            if error != nil {
+                print(error?.localizedDescription)
+                return
+            }
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -158,6 +176,8 @@ class MoviesSearchViewController: UIViewController {
     
     func setTheme() {
         
+        hideError()
+        
         tableView.backgroundColor = UIColor.blackColor()
         // remove showing empty row for table incase network error
         tableView.tableFooterView = UIView()
@@ -193,48 +213,9 @@ extension MoviesSearchViewController: UITableViewDataSource {
         let movie = filteredMovies![indexPath.row]
         cell.setData(movie)
         cell.setTheme()
+        cell.delegate = self
         
         return cell
-    }
-    
-    // Asks the delegate for the actions to display in response to a swipe in the specified row.
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        
-        // setup favorite action
-        let isFavorited = filteredMovies![indexPath.row].isFavorited
-        let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
-        let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
-            
-            self.filteredMovies![indexPath.row].isFavorited = !isFavorited
-            // reload row style
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
-            // dismiss cell actions
-            tableView.editing = false
-        })
-        favoriteAction.backgroundColor = UIColor.darkGrayColor()
-        
-        // setup share action
-        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
-            
-            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
-            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default, handler: nil)
-            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default, handler: nil)
-            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default, handler: nil)
-            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
-                
-                // // dimiss cell actions
-                tableView.editing = false
-            })
-            
-            shareMenu.addAction(twitterAction)
-            shareMenu.addAction(facebookAction)
-            shareMenu.addAction(moreAction)
-            shareMenu.addAction(doneAction)
-            self.presentViewController(shareMenu, animated: true, completion: nil)
-        })
-        shareAction.backgroundColor = UIColor.lightGrayColor()
-        
-        return [shareAction, favoriteAction]
     }
 }
 
@@ -291,5 +272,121 @@ extension MoviesSearchViewController: UIScrollViewDelegate {
                 loadMoreMovies()
             }
         }
+    }
+}
+
+extension MoviesSearchViewController: FavoriteProviderDataSource {
+    
+    // get favorite object by object id
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject? {
+        
+        // get favorite object by id
+        let movies = filteredMovies?.filter({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        if movies?.count > 0 {
+            return movies![0]
+        }
+        return nil
+    }
+}
+
+extension MoviesSearchViewController: FavoriteProviderDelegate {
+    
+    // object Id did changed favorite value
+    func favoriteProvider(favoriteProvider: FavoriteProvider, objectIdDidChangedFavoriteValue objectId: Int) {
+        
+        // get row index
+        let index = filteredMovies?.indexOf({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        // reload row style
+        if let index = index {
+            tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
+        }
+    }
+}
+
+extension MoviesSearchViewController: MGSwipeTableCellDelegate {
+    
+    func swipeTableCell(cell: MGSwipeTableCell!, tappedButtonAtIndex index: Int, direction: MGSwipeDirection, fromExpansion: Bool) -> Bool
+    {
+        switch (direction) {
+        case .LeftToRight:
+            // tap on Favorite button
+            if index == 0 {
+                tapFavoriteButton(cell)
+            }
+        case .RightToLeft:
+            // tap on Share button
+            if index == 0 {
+                tapShareButton(cell)
+            }
+        }
+        
+        return true
+    }
+    
+    private func tapFavoriteButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            let movie = filteredMovies![indexPath.row]
+            favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+        }
+    }
+    
+    private func tapShareButton(cell: MGSwipeTableCell!) {
+        
+        if let indexPath = tableView.indexPathForCell(cell) {
+            
+            let movie = filteredMovies![indexPath.row]
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                // Check if sharing to Twitter is possible.
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                    // Initialize the default view controller for sharing the post.
+                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+                    twitterComposeVC.setInitialText("Why this movie get so hight rating? Could you tell me?")
+                    // Display the compose view controller.
+                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not logged in to your Twitter account.")
+                }
+            }
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    // Initialize the default view controller for sharing the post.
+                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                    facebookComposeVC.setInitialText("\(movie.overview!)")
+                    // Display the compose view controller.
+                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
+                }
+                else {
+                    self.showAlertMessage("You are not connected to your Facebook account.")
+                }
+            }
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
+                
+                let activityViewController = UIActivityViewController(activityItems: [movie.overview!], applicationActivities: nil)
+                activityViewController.excludedActivityTypes = [UIActivityTypeMail]
+                self.presentViewController(activityViewController, animated: true, completion: nil)
+            }
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: nil)
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        }
+    }
+    
+    private func showAlertMessage(message: String!) {
+        
+        let alertController = UIAlertController(title: "Movie Viewer", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }
