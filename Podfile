@@ -8,5 +8,9 @@ target 'MovieViewer' do
   # Pods for MovieViewer
   pod 'AFNetworking'
   pod 'MBProgressHUD'
-
+  pod 'RealmSwift'
+  pod 'Firebase'
+  pod 'Firebase/Database'
+  pod 'Firebase/Auth'
+  
 end

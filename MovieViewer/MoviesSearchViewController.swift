@@ -22,10 +22,12 @@ class MoviesSearchViewController: UIViewController {
         didSet {
             
             filteredMovies = movies
+            favoriteProvider.populateData((filteredMovies?.movieIds())!)
         }
     }
     var filteredMovies: [Movie]?
     var isMoreDataLoading = false
+    var favoriteProvider = FirebaseFavoriteProvider()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,8 @@ class MoviesSearchViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         searchBar.delegate = self
+        favoriteProvider.dataSource = self
+        favoriteProvider.delegate = self
         
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
@@ -42,6 +46,19 @@ class MoviesSearchViewController: UIViewController {
         // init UI theme
         setTheme()
         hideError()
+        
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // prepare favorite provider
+        favoriteProvider.prepare { (error) in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            if error != nil {
+                print(error?.localizedDescription)
+                return
+            }
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -196,18 +213,25 @@ extension MoviesSearchViewController: UITableViewDataSource {
         
         return cell
     }
+}
+
+extension MoviesSearchViewController: UITableViewDelegate {
+    
+    // Tells the delegate that the specified row is now selected.
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
     
     // Asks the delegate for the actions to display in response to a swipe in the specified row.
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         
         // setup favorite action
-        let isFavorited = filteredMovies![indexPath.row].isFavorited
-        let actionTitle = isFavorited ? "Unfavorite" : "Favorite"
+        let movie = filteredMovies![indexPath.row]
+        let actionTitle = movie.isFavorited ? "Unfavorite" : "Favorite"
         let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
-            self.filteredMovies![indexPath.row].isFavorited = !isFavorited
-            // reload row style
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
+            self.favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
             // dismiss cell actions
             tableView.editing = false
         })
@@ -235,15 +259,6 @@ extension MoviesSearchViewController: UITableViewDataSource {
         shareAction.backgroundColor = UIColor.lightGrayColor()
         
         return [shareAction, favoriteAction]
-    }
-}
-
-extension MoviesSearchViewController: UITableViewDelegate {
-    
-    // Tells the delegate that the specified row is now selected.
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 }
 
@@ -290,6 +305,38 @@ extension MoviesSearchViewController: UIScrollViewDelegate {
                 // load more movie
                 loadMoreMovies()
             }
+        }
+    }
+}
+
+extension MoviesSearchViewController: FavoriteProviderDataSource {
+    
+    // get favorite object by object id
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject? {
+        
+        // get favorite object by id
+        let movies = filteredMovies?.filter({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        if movies?.count > 0 {
+            return movies![0]
+        }
+        return nil
+    }
+}
+
+extension MoviesSearchViewController: FavoriteProviderDelegate {
+    
+    // object Id did changed favorite value
+    func favoriteProvider(favoriteProvider: FavoriteProvider, objectIdDidChangedFavoriteValue objectId: Int) {
+        
+        // get row index
+        let index = filteredMovies?.indexOf({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        // reload row style
+        if let index = index {
+            tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
         }
     }
 }

@@ -39,6 +39,7 @@ class MoviesViewController: UIViewController {
         didSet {
             
             filteredMovies = movies
+            favoriteProvider.populateData((filteredMovies?.movieIds())!)
         }
     }
     var filteredMovies: [Movie]?
@@ -53,17 +54,20 @@ class MoviesViewController: UIViewController {
         }
     }
     var displayMode = DisplayMode.Grid
+    var favoriteProvider = FirebaseFavoriteProvider()
     
     // Called after the controller's view is loaded into memory
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // set delegate
         tableView.dataSource = self
         tableView.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
         searchBar.delegate = self
+        favoriteProvider.dataSource = self
+        favoriteProvider.delegate = self
         
         // setup controls, UI
         setupRefreshControls()
@@ -71,8 +75,21 @@ class MoviesViewController: UIViewController {
         defaultNavigationTitleView = navigationItem.titleView
         setTheme()
         
-        // load data to view
-        loadMovies()
+        // Display HUD right before the request is made
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        // prepare favorite provider
+        favoriteProvider.prepare { (error) in
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+            if error != nil {
+                print(error?.localizedDescription)
+                return
+            }
+            
+            // load data to view
+            self.loadMovies()
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -246,7 +263,6 @@ extension MoviesViewController: UITableViewDataSource {
         
         return cell
     }
-    
 }
 
 extension MoviesViewController: UITableViewDelegate {
@@ -255,6 +271,46 @@ extension MoviesViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    // Asks the delegate for the actions to display in response to a swipe in the specified row.
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        
+        // setup favorite action
+        let movie = filteredMovies![indexPath.row]
+        let actionTitle = movie.isFavorited ? "Unfavorite" : "Favorite"
+        let favoriteAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: actionTitle, handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            self.favoriteProvider.saveFavorite(movie, isFavorited: !movie.isFavorited)
+            // reload row style
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Right)
+            // dismiss cell actions
+            tableView.editing = false
+        })
+        favoriteAction.backgroundColor = UIColor.darkGrayColor()
+        
+        // setup share action
+        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Share" , handler: { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            let shareMenu = UIAlertController(title: nil, message: "Share your Movie", preferredStyle: .ActionSheet)
+            let twitterAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default, handler: nil)
+            let facebookAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default, handler: nil)
+            let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default, handler: nil)
+            let doneAction = UIAlertAction(title: "Done", style: UIAlertActionStyle.Cancel, handler: { (action) in
+                
+                // // dimiss cell actions
+                tableView.editing = false
+            })
+            
+            shareMenu.addAction(twitterAction)
+            shareMenu.addAction(facebookAction)
+            shareMenu.addAction(moreAction)
+            shareMenu.addAction(doneAction)
+            self.presentViewController(shareMenu, animated: true, completion: nil)
+        })
+        shareAction.backgroundColor = UIColor.lightGrayColor()
+        
+        return [shareAction, favoriteAction]
     }
 }
 
@@ -313,5 +369,45 @@ extension MoviesViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDataSource {
+    
+    // get favorite object by object id
+    func getFavoriteObjectById(favoriteProvider: FavoriteProvider, favoriteObjectId objectId: Int) -> FavoriteObject? {
+        
+        // get favorite object by id
+        let movies = filteredMovies?.filter({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        if movies?.count > 0 {
+            return movies![0]
+        }
+        return nil
+    }
+}
+
+extension MoviesViewController: FavoriteProviderDelegate {
+    
+    // object Id did changed favorite value
+    func favoriteProvider(favoriteProvider: FavoriteProvider, objectIdDidChangedFavoriteValue objectId: Int) {
+        
+        // get row index
+        let index = filteredMovies?.indexOf({ (movie) -> Bool in
+            return movie.getFavoriteObjectId() == objectId
+        })
+        // get list of visible cell
+        let indexPaths = tableView.indexPathsForVisibleRows
+        
+        guard index != nil else { return }
+        guard indexPaths != nil else { return }
+        
+        for indexPath in indexPaths! {
+            if indexPath.row == index {
+                // reload row style
+                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Right)
+            }
+        }
     }
 }

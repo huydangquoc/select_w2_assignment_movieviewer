@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B22F8271D32A298001F00D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B22F8261D32A297001F00D3 /* GoogleService-Info.plist */; };
+		6B2EF73F1D361313007A91CC /* FavoriteProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2EF73E1D361313007A91CC /* FavoriteProviderDelegate.swift */; };
 		6B56C2951D250181004A84F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B56C2941D250181004A84F9 /* AppDelegate.swift */; };
 		6B56C29A1D250181004A84F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B56C2981D250181004A84F9 /* Main.storyboard */; };
 		6B56C29C1D250181004A84F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B56C29B1D250181004A84F9 /* Assets.xcassets */; };
@@ -17,15 +19,24 @@
 		6B56C2B21D256D9E004A84F9 /* TMDBClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B56C2B11D256D9E004A84F9 /* TMDBClient.swift */; };
 		6B56C2B41D256E36004A84F9 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B56C2B31D256E36004A84F9 /* Movie.swift */; };
 		6B5CB3B81D2669950007EC94 /* MovieCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5CB3B71D2669950007EC94 /* MovieCollectionCell.swift */; };
+		6B697F6F1D316BB900D28C94 /* FavoriteRealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B697F6E1D316BB900D28C94 /* FavoriteRealmObject.swift */; };
 		6B6AA5271D281577001D9703 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6AA5261D281577001D9703 /* UIImageView.swift */; };
 		6B6AA52A1D282AD9001D9703 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6AA5291D282AD9001D9703 /* UIColor.swift */; };
 		6BA2CC731D2E1D4300E0CDAF /* MoviesSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA2CC721D2E1D4300E0CDAF /* MoviesSearchViewController.swift */; };
 		6BA2CC751D2E25FD00E0CDAF /* SearchMovieSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA2CC741D2E25FD00E0CDAF /* SearchMovieSettings.swift */; };
 		6BA2CC771D2E771900E0CDAF /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA2CC761D2E771800E0CDAF /* FiltersViewController.swift */; };
+		6BD0BB241D3563BA00364DB0 /* FavoriteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB231D3563BA00364DB0 /* FavoriteProvider.swift */; };
+		6BD0BB261D3565AF00364DB0 /* FavoriteObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB251D3565AF00364DB0 /* FavoriteObject.swift */; };
+		6BD0BB281D3567B600364DB0 /* FavoriteProviderDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB271D3567B600364DB0 /* FavoriteProviderDataSource.swift */; };
+		6BD0BB2A1D35698200364DB0 /* LocalFavoriteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB291D35698200364DB0 /* LocalFavoriteProvider.swift */; };
+		6BD0BB2F1D35ECA300364DB0 /* RealmFavoriteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB2E1D35ECA300364DB0 /* RealmFavoriteProvider.swift */; };
+		6BD0BB321D35FEED00364DB0 /* FirebaseFavoriteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0BB311D35FEED00364DB0 /* FirebaseFavoriteProvider.swift */; };
 		CC02BBE5F15164B747E6BBB8 /* Pods_MovieViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4A99C447AAF84FF8BDFEFC8 /* Pods_MovieViewer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6B22F8261D32A297001F00D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6B2EF73E1D361313007A91CC /* FavoriteProviderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteProviderDelegate.swift; sourceTree = "<group>"; };
 		6B56C2911D250181004A84F9 /* MovieViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B56C2941D250181004A84F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6B56C2991D250181004A84F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -38,11 +49,18 @@
 		6B56C2B11D256D9E004A84F9 /* TMDBClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TMDBClient.swift; sourceTree = "<group>"; };
 		6B56C2B31D256E36004A84F9 /* Movie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		6B5CB3B71D2669950007EC94 /* MovieCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCollectionCell.swift; sourceTree = "<group>"; };
+		6B697F6E1D316BB900D28C94 /* FavoriteRealmObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteRealmObject.swift; sourceTree = "<group>"; };
 		6B6AA5261D281577001D9703 /* UIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		6B6AA5291D282AD9001D9703 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		6BA2CC721D2E1D4300E0CDAF /* MoviesSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesSearchViewController.swift; sourceTree = "<group>"; };
 		6BA2CC741D2E25FD00E0CDAF /* SearchMovieSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchMovieSettings.swift; sourceTree = "<group>"; };
 		6BA2CC761D2E771800E0CDAF /* FiltersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		6BD0BB231D3563BA00364DB0 /* FavoriteProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteProvider.swift; sourceTree = "<group>"; };
+		6BD0BB251D3565AF00364DB0 /* FavoriteObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteObject.swift; sourceTree = "<group>"; };
+		6BD0BB271D3567B600364DB0 /* FavoriteProviderDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteProviderDataSource.swift; sourceTree = "<group>"; };
+		6BD0BB291D35698200364DB0 /* LocalFavoriteProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFavoriteProvider.swift; sourceTree = "<group>"; };
+		6BD0BB2E1D35ECA300364DB0 /* RealmFavoriteProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmFavoriteProvider.swift; sourceTree = "<group>"; };
+		6BD0BB311D35FEED00364DB0 /* FirebaseFavoriteProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFavoriteProvider.swift; sourceTree = "<group>"; };
 		A22340D3199F1124145581D8 /* Pods-MovieViewer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieViewer.release.xcconfig"; path = "Pods/Target Support Files/Pods-MovieViewer/Pods-MovieViewer.release.xcconfig"; sourceTree = "<group>"; };
 		E4A99C447AAF84FF8BDFEFC8 /* Pods_MovieViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE51B5A77DF7A2835CFE8CD1 /* Pods-MovieViewer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieViewer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MovieViewer/Pods-MovieViewer.debug.xcconfig"; sourceTree = "<group>"; };
@@ -81,6 +99,7 @@
 		6B56C2931D250181004A84F9 /* MovieViewer */ = {
 			isa = PBXGroup;
 			children = (
+				6BD0BB221D35638500364DB0 /* FavoriteProvider */,
 				6B6AA5251D281546001D9703 /* Extension */,
 				6B56C2B51D263AAD004A84F9 /* API */,
 				6B56C2A81D250AD0004A84F9 /* Models */,
@@ -91,6 +110,7 @@
 				6B56C29B1D250181004A84F9 /* Assets.xcassets */,
 				6B56C29D1D250182004A84F9 /* LaunchScreen.storyboard */,
 				6B56C2A01D250182004A84F9 /* Info.plist */,
+				6B22F8261D32A297001F00D3 /* GoogleService-Info.plist */,
 			);
 			path = MovieViewer;
 			sourceTree = "<group>";
@@ -139,6 +159,53 @@
 				6B6AA5291D282AD9001D9703 /* UIColor.swift */,
 			);
 			name = Extension;
+			sourceTree = "<group>";
+		};
+		6BD0BB221D35638500364DB0 /* FavoriteProvider */ = {
+			isa = PBXGroup;
+			children = (
+				6BD0BB301D35FAC700364DB0 /* Firebase */,
+				6BD0BB2D1D35EBE800364DB0 /* Realm */,
+				6BD0BB2C1D35EBDA00364DB0 /* Local */,
+				6BD0BB2B1D35EBCC00364DB0 /* Base */,
+			);
+			name = FavoriteProvider;
+			sourceTree = "<group>";
+		};
+		6BD0BB2B1D35EBCC00364DB0 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				6BD0BB231D3563BA00364DB0 /* FavoriteProvider.swift */,
+				6BD0BB251D3565AF00364DB0 /* FavoriteObject.swift */,
+				6BD0BB271D3567B600364DB0 /* FavoriteProviderDataSource.swift */,
+				6B2EF73E1D361313007A91CC /* FavoriteProviderDelegate.swift */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		6BD0BB2C1D35EBDA00364DB0 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				6BD0BB291D35698200364DB0 /* LocalFavoriteProvider.swift */,
+			);
+			name = Local;
+			sourceTree = "<group>";
+		};
+		6BD0BB2D1D35EBE800364DB0 /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				6B697F6E1D316BB900D28C94 /* FavoriteRealmObject.swift */,
+				6BD0BB2E1D35ECA300364DB0 /* RealmFavoriteProvider.swift */,
+			);
+			name = Realm;
+			sourceTree = "<group>";
+		};
+		6BD0BB301D35FAC700364DB0 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				6BD0BB311D35FEED00364DB0 /* FirebaseFavoriteProvider.swift */,
+			);
+			name = Firebase;
 			sourceTree = "<group>";
 		};
 		7A02AB85B9AFDD4C83C7B2B0 /* Frameworks */ = {
@@ -221,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B56C29F1D250182004A84F9 /* LaunchScreen.storyboard in Resources */,
+				6B22F8271D32A298001F00D3 /* GoogleService-Info.plist in Resources */,
 				6B56C29C1D250181004A84F9 /* Assets.xcassets in Resources */,
 				6B56C29A1D250181004A84F9 /* Main.storyboard in Resources */,
 			);
@@ -282,6 +350,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B5CB3B81D2669950007EC94 /* MovieCollectionCell.swift in Sources */,
+				6B697F6F1D316BB900D28C94 /* FavoriteRealmObject.swift in Sources */,
+				6BD0BB2F1D35ECA300364DB0 /* RealmFavoriteProvider.swift in Sources */,
 				6B6AA5271D281577001D9703 /* UIImageView.swift in Sources */,
 				6B56C2AE1D2565EE004A84F9 /* MovieDetailViewController.swift in Sources */,
 				6B56C2951D250181004A84F9 /* AppDelegate.swift in Sources */,
@@ -289,8 +359,14 @@
 				6B56C2B41D256E36004A84F9 /* Movie.swift in Sources */,
 				6B56C2B21D256D9E004A84F9 /* TMDBClient.swift in Sources */,
 				6B56C2AA1D250AF9004A84F9 /* MoviesViewController.swift in Sources */,
+				6BD0BB321D35FEED00364DB0 /* FirebaseFavoriteProvider.swift in Sources */,
+				6B2EF73F1D361313007A91CC /* FavoriteProviderDelegate.swift in Sources */,
+				6BD0BB281D3567B600364DB0 /* FavoriteProviderDataSource.swift in Sources */,
 				6B56C2AC1D251630004A84F9 /* MovieCell.swift in Sources */,
 				6BA2CC731D2E1D4300E0CDAF /* MoviesSearchViewController.swift in Sources */,
+				6BD0BB261D3565AF00364DB0 /* FavoriteObject.swift in Sources */,
+				6BD0BB2A1D35698200364DB0 /* LocalFavoriteProvider.swift in Sources */,
+				6BD0BB241D3563BA00364DB0 /* FavoriteProvider.swift in Sources */,
 				6BA2CC771D2E771900E0CDAF /* FiltersViewController.swift in Sources */,
 				6B6AA52A1D282AD9001D9703 /* UIColor.swift in Sources */,
 			);
